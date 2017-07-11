@@ -5,6 +5,8 @@ var postrouter = express.Router();
 var commentrouter = express.Router();
 var messagerouter = express.Router();
 var model = require("../model");
+
+
 const USER = model.User;
 const POST = model.Post;
 const COMMENT = model.Comment;
@@ -22,62 +24,60 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ dest: "./public/upload",storage });
 
-function isInByID(o,arr){
-    var result = false;
-    for(var i = 0;i<arr.length;i++){
-        if(o){
-            if(o.id == arr[i].id){
-                result = i;
-                break
-            }
+function getIndex(o,arrs,key){
+    var index = -1;
+    for(var i=0;i<arrs.length;i++){
+        if(o[key] == arrs[i][key]){
+            index = i;
+            break;
         }
     }
-    return result;
+    return index;
+}
+
+
+
+function mergResult(results){
+    var r =[];
+    for(var i=0;i<results.length;i++){  //遍历寻找postid是否重复 未重复增加一项 重复修改commentcontent
+        var result = results[i];
+        var index = getIndex(result,r,"postid");
+        if(index == -1){
+            var o = {
+                postid:result.postid,
+                comments_id:result.comments_id,
+                posttitle:result.posttitle,
+                postcontent:result.postcontent,
+                comment:[{content:result.commentcontent,auth_id:result.comments_u_id,comments_id:result.comments_id}],
+                stars:[result.stars_u_id],
+                friendname:result.friendname
+            };
+            r.push(o);
+        }else{
+            var comments_index = getIndex(result,r[index].comment,"comments_id")
+            if(comments_index == -1){
+                r[index].comment.push({content:result.commentcontent,auth_id:result.comments_u_id,comments_id:result.comments_id});
+            }
+            if(r[index].stars.indexOf(result.stars_u_id)==-1){
+                r[index].stars.push(result.stars_u_id);
+            }
+            
+        }
+    }
+    return r;
 }
 
 //获取所有好友说说
 userrouter.get("/:id/posts_detail",(req,res)=>{
     var id = req.params.id;
-    var results={};
-    CONNECT.query("SELECT * FROM posts LEFT JOIN comments ON posts.id = comments.postId LEFT JOIN users ON posts.userId = users.id WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+")").then(function(posts){
-        var posts = posts[0];
-        var result=[];
-        for(var i=0;i<posts.length;i++){
-            var index = isInByID(posts[i],result);
-            if(index != false){
-            }else{
-                var p = {};
-                p.comments=[];
-                p.stars=[];
-                p.id=posts[i].id;
-                p.postsid = posts[i].postId;
-                result.push(p);
-            }
-        }
-        for(var i=0;i<posts.length;i++){
-            var index = isInByID(posts[i],result);
-            if(index !== false){
-                result[index].comments.push(posts[i].content);
-            }else{
-            }
-        }
-        results.result = result;
-        CONNECT.query("SELECT posts.id as postId,stars.userId as id,users.nickname FROM posts LEFT JOIN stars ON posts.id=stars.postId LEFT JOIN users ON stars.userId=users.id WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+")").then(function(stars){
-            var stars = stars[0];
-            
-            console.log(results)
-            for(var i=0;i<stars.length;i++){
-                for(var j=0;j<results.result.length;j++){
-                    console.log(stars[i].postId , results.result[j].postsid);
-                    if(stars[i].postId == results.result[j].postsid){
-                        // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                        // console.log(results.result[j].stars)
-                        results.result[j].stars.push(stars[i].nickname);
-                    }
-                }
-            }
-            res.send(results);
-        });
+    CONNECT.query("SELECT posts.id AS postid,posts.title AS posttitle,posts.content AS postcontent,posts.createdAt AS postcreated,stars.userId AS stars_u_id,comments.id as comments_id,   comments.userId as comments_u_id,comments.content AS commentcontent,users.nickname AS friendname FROM posts LEFT JOIN comments ON posts.id = comments.postId LEFT JOIN users ON posts.userId = users.id LEFT JOIN stars ON posts.id=stars.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+")").then(function(result){
+        // mergResult(result[0]);
+        
+        
+        
+        res.send(mergResult(result[0]))
+        // res.send(result[0]);
+
         
     });
     
@@ -321,7 +321,6 @@ commentrouter.get("/", function (req, res) {
 messagerouter.get("/", function (req, res) {
     var user = req.query.user;
     var friend = req.query.friend;
-    console.log(user, friend);
     if (user && friend) {
         var key = user + "_" + friend;
         redis.lrange(key, 0, -1, function (err, data) {

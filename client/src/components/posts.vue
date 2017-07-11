@@ -1,6 +1,11 @@
 <template>
   <div class="post">
-      posts
+      <ul>
+        <li v-for="post in posts" :key="post.postid">
+          <h3>{{post.posttitle}}</h3>
+          <p>{{post.postcontent}}</p>
+        </li>
+      </ul>
   </div>
 </template>
 
@@ -20,5 +25,7 @@ export default {
 </script>
 
 <style lang="less">
-
+  ul{list-style: none;text-align: left;
+    li{margin-bottom: 30px;border-bottom: 1px solid #ccc;}
+  }
 </style>

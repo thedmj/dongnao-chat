@@ -14,7 +14,8 @@ export default new vuex.Store({
     state:{
         friends:[],
         posts:[],
-        self:[]
+        self:[],
+        message:[]
     },
     getters: {
         
@@ -31,7 +32,6 @@ export default new vuex.Store({
                 type:"get",
                 success:function(data){
                     state.friends=data;
-                    console.log(data);
                 }
             });
         },
@@ -39,10 +39,11 @@ export default new vuex.Store({
             $.ajax({
                 url:get_posts,
                 success:function(data){
-                    state.posts = data;
-                    console.log(data);
+                    state.posts = data; 
                 }
             });
         }
+
+
     }
 });
