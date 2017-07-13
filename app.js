@@ -8,12 +8,25 @@ var socketio  = require("socket.io");
 var http = require("http").createServer(app);
 var io = socketio(http);
 var path = require("path");
+var redis = require("./model").redis;
 
+
+var client={};
 io.on("connection",function(socket){
-    io.emit("test","aaaaaa");
-    socket.on("test",(data)=>{
-        console.log(data);
-    })
+    if(!client["ryan"]){
+        client["ryan"]=socket;
+    }
+    socket.on("message",(data)=>{
+        redis.rpush(data.user+"_"+data.friend,JSON.stringify(Object.assign({},data,{type:"send",read:true})));
+        redis.rpush(data.friend+"_"+data.user,JSON.stringify(Object.assign({},data,{type:"receive",read:false})));
+        if(client[data.user]){
+            client[data.user].emit("update");
+        }
+        if(client[data.friend]){
+            client[data.friend].emit("update");
+        }
+    });
+
 });
 
 

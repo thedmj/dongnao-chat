@@ -2,7 +2,7 @@
   <div class="friends" >
       <h3>好友列表</h3>
       <ul>
-        <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname)">
+        <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id)">
           <img :src="'http://localhost:3000/upload/'+friend.logo" alt="" width="60" height="60">
           {{friend.nickname}}
         </li>
@@ -11,19 +11,19 @@
 </template>
 
 <script>
-import {mapState,mapGetters,mapActions} from "vuex";
+import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
 export default {
   methods: {
       ...mapActions(["getFriends"]),
-      chat(username){
-        this.$router.push("/chat"+"?username="+username)
+      ...mapMutations(["set_chat_friend","setMe"]),
+      chat(username,id){
+        
+        this.$router.push("/chat"+"?username="+username);
+        this.set_chat_friend({name:username,id});
       }
   },
   computed: {
     ...mapState(["friends"])
-    // ...mapState({test:function(state){
-    //   return state.test
-    // }})
   },
   mounted () {
     this.getFriends();
