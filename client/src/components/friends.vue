@@ -17,16 +17,19 @@ export default {
       ...mapActions(["getFriends"]),
       ...mapMutations(["set_chat_friend","setMe"]),
       chat(username,id){
-        
         this.$router.push("/chat"+"?username="+username);
         this.set_chat_friend({name:username,id});
       }
   },
   computed: {
-    ...mapState(["friends"])
+    ...mapState(["friends","me"])
   },
   mounted () {
-    this.getFriends();
+    console.log("friend mounted")
+    if(this.me){
+      console.log("friend  getfriends")
+      this.getFriends(this.me.id);
+    }
   }
 }
 </script>

@@ -329,10 +329,29 @@ messagerouter.get("/", function (req, res) {
     }
 })
 
+//登录
 
 
+// router.get("/",(req,res)=>{
+//     res.render("login.html");
+// });
 router.use("/user", userrouter);
 router.use("/post", postrouter);
 router.use("/comment", commentrouter);
 router.use("/message", messagerouter);
+router.post("/login",(req,res)=>{
+    var username = req.body.username;
+    var password = req.body.password;
+    CONNECT.query("SELECT users.username,users.nickname,users.id FROM users WHERE username = '"+username+"' AND password = '"+password+"'").then((result)=>{
+        if(result[0].length>0){
+            // var nickname = result[0].nickname;
+            // res.cookie("user",{username:username,nickname},{maxAge:60000});
+            var result = Object.assign({},result[0][0],{status:0,desc:"登录成功"});
+            res.send(result);
+        }else{
+            res.send({status:1,desc:"用户名或密码错误"});
+        }
+    })
+});
+
 module.exports = router;

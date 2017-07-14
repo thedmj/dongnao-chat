@@ -4,8 +4,7 @@
       {{chat_friend.name}} id:{{chat_friend.id}}聊天
       <ul>
         <li v-for="(item,$index) in message" :key="$index">
-          <span v-if="item.type == 'send'">{{item.user}}</span>
-          <span v-else >{{item.friend}}</span>
+          <span >{{item.user.name}}</span><avatar username="老宋"></avatar>
           :{{item.text}}
         </li>
       </ul>
@@ -16,21 +15,19 @@
 
 <script>
 import io from "../../../node_modules/socket.io-client/dist/socket.io";
+import Avatar from 'vue-avatar/dist/Avatar'
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
 export default {
   data(){
     return {
       text:"",
+      socket:null
     }
   },
   methods: {
     ...mapActions(["get_message","send_message"]),
     sendMessage(){
-      var socket = io.connect("http://localhost:3000/");
-      socket.on("update", ()=>{
-        this.get_message()
-      });
-      socket.emit("message",{friend:this.chat_friend.name,text:this.text,user:this.me.name,type:'send'});
+      this.socket.emit("message",{friend:{name:this.chat_friend.name,id:this.chat_friend.id},text:this.text,user:{name:this.me.name,id:this.me.id},type:'send'});
       this.text="";
     }
   },
@@ -38,8 +35,21 @@ export default {
     ...mapState(["chat_friend","me","message"])
   },
   mounted () {
-    var username = this.$route.query.username;
-    this.get_message({user:this.me.name,friend:this.chat_friend.name});
+    this.socket = io.connect("http://localhost:3000/");
+    if(this.me){
+      this.socket.emit("login",this.me);
+      this.socket.on("update", ()=>{
+        this.get_message({user:this.me.name,friend:this.chat_friend.name})
+      });
+      if(this.$route.query.username){
+        var username = this.$route.query.username;
+        this.get_message({user:this.me.name,friend:this.chat_friend.name});
+        console.log(this.message)
+      }
+    }
+  },
+  components: {
+    Avatar
   }
 }
 </script>

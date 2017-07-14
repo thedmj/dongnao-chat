@@ -22,14 +22,16 @@ export default new vuex.Store({
             name:"",
             id:""
         },
-        me:{name:"ryan",id:1}
+        me:null
     },
     getters: {
         
     },
     mutations:{
-        setMe(state,o){
-            state.me.name=o.name;
+        set_me(state,o){
+            state.me={};
+            state.me.username = o.username;
+            state.me.name=o.nickname;
             state.me.id=o.id;
         },
         set_chat_friend(state,friend){
@@ -38,9 +40,9 @@ export default new vuex.Store({
         }
     },
     actions:{
-        getFriends({state}){
+        getFriends({state},id){
             $.ajax({
-                url:get_friends,
+                url:host+"user/"+id+"/friends",
                 type:"get",
                 success:function(data){
                     state.friends=data;
@@ -58,9 +60,8 @@ export default new vuex.Store({
         get_message({state}){
             $.ajax({
                 url:get_message,
-                data:{user:state.me.name,friend:state.chat_friend.name},
+                data:{user:state.me.id,friend:state.chat_friend.id},
                 success:function(data){
-                    // var data = JSON.parse(data);
                     for(var i=0;i<data.length;i++){
                         data[i] = JSON.parse(data[i]);
                     }
@@ -72,9 +73,7 @@ export default new vuex.Store({
         send_message({state}){
             
         },
-        set_me({commit},o){
-            commit("setMe",o);
-        }
+        
 
 
     }

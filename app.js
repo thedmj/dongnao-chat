@@ -9,21 +9,27 @@ var http = require("http").createServer(app);
 var io = socketio(http);
 var path = require("path");
 var redis = require("./model").redis;
+var cookieParser = require("cookie-parser");
 
-
+app.engine('.html', require('ejs').__express);
+app.set('view engine', 'html');
+app.set('views', path.join(__dirname, 'views'));
+app.use(cookieParser());
 var client={};
 io.on("connection",function(socket){
-    if(!client["ryan"]){
-        client["ryan"]=socket;
-    }
+    socket.on("login",(user)=>{
+        client[user.id] = socket;
+    })
+    
     socket.on("message",(data)=>{
-        redis.rpush(data.user+"_"+data.friend,JSON.stringify(Object.assign({},data,{type:"send",read:true})));
-        redis.rpush(data.friend+"_"+data.user,JSON.stringify(Object.assign({},data,{type:"receive",read:false})));
-        if(client[data.user]){
-            client[data.user].emit("update");
+        redis.rpush(data.user.id+"_"+data.friend.id,JSON.stringify(Object.assign({},data,{type:"send",read:true})));
+        redis.rpush(data.friend.id+"_"+data.user.id,JSON.stringify(Object.assign({},data,{type:"receive",read:false})));
+        console.log(data.user,data.friend)
+        if(client[data.user.id]){
+            client[data.user.id].emit("update");
         }
-        if(client[data.friend]){
-            client[data.friend].emit("update");
+        if(client[data.friend.id]){
+            client[data.friend.id].emit("update");
         }
     });
 

@@ -4,15 +4,16 @@ import friends from "../components/friends.vue";
 import self from "../components/self.vue";
 import posts from "../components/posts.vue";
 import chat from "../components/chat.vue";
+import login from "../components/login.vue";
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'friends',
-      component: friends
+      path: '/login',
+      name: 'login',
+      component: login
     },
     {
       path: '/friends',
