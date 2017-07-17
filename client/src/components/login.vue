@@ -7,24 +7,7 @@
 </template>
 
 <script>
-function setcookie(name,value,iday){
-　　var odate=new Date();
-　　odate.setDate(odate.getDate()+iday);
-　　document.cookie=name+"="+value+";expires="+odate;
-}
-function getCookie(key) {
-    var cookieArr = document.cookie.split('; ');
-    for(var i = 0; i < cookieArr.length; i++) {
-        var arr = cookieArr[i].split('=');
-        if(arr[0] === key) {
-            return arr[1];
-        }
-    }
-    return false;
-}
-function removeCookie(key) {
-    setCookie(key, '', -1);//这里只需要把Cookie保质期退回一天便可以删除
-}
+import{setCookie,getCookie} from "../public/js/cookies.api";
 import $ from "jquery";
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
 export default {
@@ -33,6 +16,15 @@ export default {
           username:"",
           password:""
       }
+  },
+  mounted () {
+    var cookie_user =JSON.parse(getCookie("user"));
+    if(cookie_user){
+        this.$router.push("/friends");
+    }
+  },
+  computed: {
+    ...mapState(["friends","me"])
   },
   methods: {
       ...mapMutations(["set_me"]),
@@ -50,7 +42,7 @@ export default {
             success(res){
                 if(res.status==0){
                     This.set_me(res);
-                    setcookie("user",JSON.stringify(res),60000);
+                    setCookie("user",JSON.stringify(res),1);
                     This.$router.push("/friends");
                 }
             }

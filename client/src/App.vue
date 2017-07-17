@@ -1,20 +1,12 @@
 <template>
   <div id="app">
     <router-view ref="rv"></router-view>
+    <button @click="logout">注销</button>
   </div>
 </template>
 
 <script>
-function getCookie(key) {
-    var cookieArr = document.cookie.split('; ');
-    for(var i = 0; i < cookieArr.length; i++) {
-        var arr = cookieArr[i].split('=');
-        if(arr[0] === key) {
-            return arr[1];
-        }
-    }
-    return false;
-}
+import {getCookie,removeCookie} from "./public/js/cookies.api";
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
 export default {
   name: 'app',
@@ -22,16 +14,16 @@ export default {
     ...mapState(["me"])
   },
   mounted () {
-    console.log(this.me)
     var cookie_user =JSON.parse(getCookie("user"));
     this.set_me(cookie_user);
-    console.log(this.me)
     if(cookie_user.status != 0){
       this.$router.push("/login");
     }else{
-      console.log("app has cookie")
       this.$router.push("/friends");
-      this.$refs.rv.getFriends();
+      // if(this.$refs.rv){
+      //   this.$refs.rv.getFriends(this.me.id);
+      // }
+      
     }
   },
   watch:{
@@ -42,7 +34,11 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["set_me"])
+    ...mapMutations(["set_me"]),
+    logout(){
+      removeCookie("user");
+      this.$router.push("/login");
+    }
   }
 }
 </script>

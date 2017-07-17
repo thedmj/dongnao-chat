@@ -37,6 +37,14 @@ export default new vuex.Store({
         set_chat_friend(state,friend){
             state.chat_friend.name = friend.name;
             state.chat_friend.id = friend.id;
+        },
+        addUnread(state,data){
+            state.friends = state.friends.map((item)=>{
+                if(item.id == data.id){
+                    item.unread ++;
+                }
+                return item;
+            });
         }
     },
     actions:{
@@ -46,6 +54,9 @@ export default new vuex.Store({
                 type:"get",
                 success:function(data){
                     state.friends=data;
+                    state.friends.map((item)=>{
+                        item.unread = 0;
+                    })
                 }
             });
         },
@@ -65,7 +76,6 @@ export default new vuex.Store({
                     for(var i=0;i<data.length;i++){
                         data[i] = JSON.parse(data[i]);
                     }
-                    console.log(data);
                     state.message = data;
                 }
             });

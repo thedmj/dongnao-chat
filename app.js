@@ -17,21 +17,25 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(cookieParser());
 var client={};
 io.on("connection",function(socket){
-    socket.on("login",(user)=>{
+    socket.on("login",(user)=>{ //连接时保存下用户的socket连接
         client[user.id] = socket;
-    })
-    
+    });
+    // socket.use((e,next)=>{
+    //     console.log(e);
+    //     next();
+    // });
     socket.on("message",(data)=>{
         redis.rpush(data.user.id+"_"+data.friend.id,JSON.stringify(Object.assign({},data,{type:"send",read:true})));
         redis.rpush(data.friend.id+"_"+data.user.id,JSON.stringify(Object.assign({},data,{type:"receive",read:false})));
-        console.log(data.user,data.friend)
         if(client[data.user.id]){
             client[data.user.id].emit("update");
         }
         if(client[data.friend.id]){
             client[data.friend.id].emit("update");
+            client[data.friend.id].emit("addUnread",data.user);
         }
     });
+    
 
 });
 
