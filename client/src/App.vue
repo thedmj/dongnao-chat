@@ -45,7 +45,6 @@
       logout() {
         removeCookie("user");
         this.$router.push("/login");
-        this.socket.reconnect();
       }
     }
   }

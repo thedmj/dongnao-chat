@@ -52,7 +52,8 @@ function mergResult(results){
                 postcontent:result.postcontent,
                 comment:[{content:result.commentcontent,auth_id:result.comments_u_id,comments_id:result.comments_id}],
                 stars:[result.stars_u_id],
-                friendname:result.friendname
+                friendname:result.friendname,
+                logo:result.logo
             };
             r.push(o);
         }else{
@@ -71,15 +72,8 @@ function mergResult(results){
 //获取所有好友说说
 userrouter.get("/:id/posts_detail",(req,res)=>{
     var id = req.params.id;
-    CONNECT.query("SELECT posts.id AS postid,posts.title AS posttitle,posts.content AS postcontent,posts.createdAt AS postcreated,stars.userId AS stars_u_id,comments.id as comments_id,   comments.userId as comments_u_id,comments.content AS commentcontent,users.nickname AS friendname FROM posts LEFT JOIN comments ON posts.id = comments.postId LEFT JOIN users ON posts.userId = users.id LEFT JOIN stars ON posts.id=stars.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+")").then(function(result){
-        // mergResult(result[0]);
-        
-        
-        
+    CONNECT.query("SELECT users.logo as logo,posts.id AS postid,posts.title AS posttitle,posts.content AS postcontent,posts.createdAt AS postcreated,stars.userId AS stars_u_id,comments.id as comments_id,   comments.userId as comments_u_id,comments.content AS commentcontent,users.nickname AS friendname FROM posts LEFT JOIN comments ON posts.id = comments.postId LEFT JOIN users ON posts.userId = users.id LEFT JOIN stars ON posts.id=stars.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+")").then(function(result){
         res.send(mergResult(result[0]))
-        // res.send(result[0]);
-
-        
     });
     
 });

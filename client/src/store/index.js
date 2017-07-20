@@ -122,10 +122,11 @@ export default new vuex.Store({
                 }
             });
         },
-        getPosts({state}) {
+        getPosts({state},id) {
             $.ajax({
-                url: get_posts,
+                url: host + "user/" + id + "/posts_detail",
                 success: function (data) {
+                    console.log("posts",data);
                     state.posts = data;
                 }
             });
