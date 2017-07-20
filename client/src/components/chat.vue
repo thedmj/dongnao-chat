@@ -30,14 +30,14 @@
   export default {
     data() {
       return {
-        text: "",
-        socket: null
+        text: ""
       }
     },
     methods: {
-      ...mapMutations(["set_me"]),
+      ...mapMutations(["set_me","set_socket","set_chat_friend"]),
       ...mapActions(["get_message", "send_message", "getFriends"]),
       sendMessage() {
+        
         this.socket.emit("message", {
           friend: {
             name: this.chat_friend.name,
@@ -54,23 +54,33 @@
       }
     },
     computed: {
-      ...mapState(["chat_friend", "me", "message"])
+      ...mapState(["chat_friend", "me", "message","socket"])
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
       this.set_me(cookie_user);
       this.getFriends(this.me.id);
-      this.socket = io.connect("http://localhost:3000/");
-      if (cookie_user) {
+      var friend_name = this.$route.query.username;
+      var friend_id = this.$route.query.id;
+      if (cookie_user && friend_name && friend_id) {
+        // if(this.socket == null){
+        //   this.set_socket(io.connect("http://localhost:3000/"));
+        //   this.socket.emit("login", this.me);
+        // }
+        this.set_socket(io.connect("http://localhost:3000/"));
         this.socket.emit("login", this.me);
-        this.socket.on("update", () => {
-          this.get_message({
-            user: this.me.name,
-            friend: this.chat_friend.name
-          })
-        });
+          this.socket.on("update", () => {
+            this.get_message({
+              user: this.me.name,
+              friend: this.chat_friend.name
+            });
+          });
         if (this.$route.query.username) {
           var username = this.$route.query.username;
+          this.set_chat_friend({
+            name: friend_name,
+            id:friend_id
+          });
           this.get_message({
             user: this.me.name,
             friend: this.chat_friend.name

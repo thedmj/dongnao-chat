@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import io from "../../../node_modules/socket.io-client/dist/socket.io";
 import{setCookie,getCookie} from "../public/js/cookies.api";
 import $ from "jquery";
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
@@ -24,10 +25,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friends","me"])
+    ...mapState(["friends","me","socket"])
   },
   methods: {
-      ...mapMutations(["set_me"]),
+      ...mapMutations(["set_me","set_socket"]),
       submit(){
         var This = this;
         var username = this.$refs.username.value;
@@ -43,6 +44,8 @@ export default {
                 if(res.status==0){
                     This.set_me(res);
                     setCookie("user",JSON.stringify(res),1);
+                    This.set_socket(io.connect("http://localhost:3000/"));
+                    This.socket.emit("login", This.me);
                     This.$router.push("/friends");
                 }
             }

@@ -5,6 +5,8 @@ var postrouter = express.Router();
 var commentrouter = express.Router();
 var messagerouter = express.Router();
 var model = require("../model");
+var client = require("../socket").client;
+
 
 
 const USER = model.User;
@@ -61,7 +63,6 @@ function mergResult(results){
             if(r[index].stars.indexOf(result.stars_u_id)==-1){
                 r[index].stars.push(result.stars_u_id);
             }
-            
         }
     }
     return r;
@@ -138,6 +139,30 @@ userrouter.get("/:id/detail", function (req, res) {
         });
     });
 });
+//搜索好友
+userrouter.get("/:id/search",(req,res)=>{
+    var name = req.query.name;
+    var sql = "SELECT users.id,users.nickname,users.logo FROM users";
+    if(name != ""){
+        sql = 'SELECT users.id,users.nickname,users.logo FROM users WHERE users.nickname LIKE "%'+name+'%"';
+    }
+    CONNECT.query(sql).then((result)=>{
+        res.send(result[0]);
+    });
+});
+//获取好友请求
+userrouter.get("/:id/request",(req,res)=>{
+    var id = req.params.id;
+    CONNECT.query('SELECT requests.id as r_id,requests.createdAt,requests.respone,users.id as u_id,nickname,logo,content FROM requests  LEFT JOIN users ON requests.fromId = users.id WHERE toId = '+id).then((get_result)=>{
+        CONNECT.query('SELECT requests.id as r_id,requests.createdAt,requests.respone,users.id as u_id,nickname,logo,content FROM requests  LEFT JOIN users ON requests.toId = users.id WHERE fromId = '+id).then((send_result)=>{
+            res.send({
+                get:get_result[0],
+                send:send_result[0]
+            });
+        })
+        
+    })
+});
 
 //删除朋友接口
 userrouter.post("/:id/rf", function (req, res) {
@@ -149,12 +174,53 @@ userrouter.post("/:id/rf", function (req, res) {
 });
 //增加朋友接口
 userrouter.post("/:id/af", function (req, res) {
-    var id = req.body.id;
-    var userid = req.body.userid;
-    CONNECT.query("INSERT INTO relations (createdAt, updatedAt,userId,friendId) VALUES (NOW(),NOW()," + id + "," + userid + ")").then(function (e) {
-        res.send(e[0]);
-    });
+    var id = req.body.id; //处理请求者的id
+    var userid = req.body.userid; //发起请求者的id
+    var request_id = req.body.request_id;
+    var type = req.body.type || "agree";
+    if(type == "agree"){ //同意好友请求
+        CONNECT.query("INSERT INTO relations (createdAt, updatedAt,userId,friendId) VALUES (NOW(),NOW()," + id + "," + userid + ")").then(function (data) {
+            if(request_id){
+                CONNECT.query("UPDATE requests SET respone = 1 WHERE id="+request_id).then((result)=>{
+                    if(client[userid]){
+                        client[userid].emit("request_result",{status:1,message:"对方同意了你的请求"})
+                    }
+                    res.send({message:"添加成功",r_id:request_id});
+                });
+            }else{
+                if(client[userid]){
+                   
+                    client[userid].emit("request_result",{status:1,message:"对方同意了你的请求"})
+                }
+                res.send({message:"添加成功",r_id:request_id});
+            }
+        }).catch((err)=>{
+            if(request_id){
+                CONNECT.query("UPDATE requests SET respone = 1 WHERE id="+request_id).then((result)=>{
+                    if(client[userid]){
+                        client[userid].emit("request_result",{status:1,message:"对方同意了你的请求虽然你们已经是好友了"})
+                    }
+                    res.send({message:"重复添加好友",r_id:request_id});
+                });
+            }else{
+                if(client[userid]){
+                        client[userid].emit("request_result",{status:1,message:"对方同意了你的请求虽然你们已经是好友了"})
+                    }
+                res.send({message:"重复添加好友",r_id:request_id});
+            }
+        });
+    }else{ //拒绝好友请求
+        CONNECT.query("UPDATE requests SET respone = 0 WHERE id="+request_id).then((result)=>{
+            if(client[userid]){
+                client[userid].emit("request_result",{status:0,message:"对方拒绝了你的请求"})
+            }
+            res.send({message:"你拒绝了请求",r_id:request_id});
+        })
+    }
+    
 })
+
+
 
 
 //增加文章接口
@@ -342,7 +408,7 @@ router.use("/message", messagerouter);
 router.post("/login",(req,res)=>{
     var username = req.body.username;
     var password = req.body.password;
-    CONNECT.query("SELECT users.username,users.nickname,users.id FROM users WHERE username = '"+username+"' AND password = '"+password+"'").then((result)=>{
+    CONNECT.query("SELECT users.username,users.nickname,users.id,users.logo FROM users WHERE username = '"+username+"' AND password = '"+password+"'").then((result)=>{
         if(result[0].length>0){
             // var nickname = result[0].nickname;
             // res.cookie("user",{username:username,nickname},{maxAge:60000});
