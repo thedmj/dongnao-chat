@@ -1,12 +1,9 @@
 import vue from "vue";
 import vuex from "vuex";
 import $ from "jquery";
-// import io from "../../../node_modules/socket.io-client/dist/socket.io"
 
 vue.use(vuex);
 let host = "http://localhost:3000/"; //以后这里要改掉
-let username = "ryan";
-let id = 1;
 let get_friends = host + "user/" + id + "/friends";
 let get_posts = host + "user/" + id + "/posts_detail";
 let get_message = host + 'message';
