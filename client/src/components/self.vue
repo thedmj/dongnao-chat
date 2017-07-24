@@ -4,7 +4,7 @@
       
       <el-upload class="avatar-uploader" :class="'uploader'" :name="'img'" :action="action" :show-file-list="false" :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
-        <img v-if="me.logo" :src="'http://localhost:3000/upload/'+me.logo" class="avatar">
+        <img v-if="me.logo" :src="host+'upload/'+me.logo" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
       
@@ -27,21 +27,21 @@
           <div class="swiper-slide">
             <ul>
               <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="'http://localhost:3000/upload/'+user.logo" alt="" width="60" height="60">
+                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
                 <h2>{{user.nickname}}</h2>
                 <button @click="sendRequest(me,user)">申请好友</button>
               </li>
             </ul>
             <ul>
               <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="'http://localhost:3000/upload/'+user.logo" alt="" width="60" height="60">
+                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
                 <h2>{{user.nickname}}</h2>
                 <button @click="sendRequest(me,user)">申请好友</button>
               </li>
             </ul>
             <ul>
               <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="'http://localhost:3000/upload/'+user.logo" alt="" width="60" height="60">
+                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
                 <h2>{{user.nickname}}</h2>
                 <button @click="sendRequest(me,user)">申请好友</button>
               </li>
@@ -107,7 +107,6 @@
     dialog,
     input
   } from "element-ui";
-  let host = "http://localhost:3000/";
 
   export default {
     data() {
@@ -129,8 +128,8 @@
         // this.socket = io.connect("http://localhost:3000/");
         // this.socket.emit("login", this.me);
         var id = this.me.id;
-        this.action = "http://localhost:3000/user/" + id + "/upload";
-        this.set_socket(io.connect("http://localhost:3000/"));
+        this.action = this.host+"user/" + id + "/upload";
+        this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
         this.socket.on("get_request", (data) => { //在线时收到好友请求
           this.fetch_request_list(this.me.id);
@@ -234,7 +233,7 @@
       }
     },
     computed: {
-      ...mapState(["friends", "me", "request_list", "socket"])
+      ...mapState(["friends", "me", "request_list", "socket","host"])
     },
     components: {
       "el-upload": upload,

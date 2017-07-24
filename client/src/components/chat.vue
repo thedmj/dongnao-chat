@@ -54,7 +54,7 @@
       }
     },
     computed: {
-      ...mapState(["chat_friend", "me", "message","socket"])
+      ...mapState(["chat_friend", "me", "message","socket","host"])
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
@@ -67,7 +67,7 @@
         //   this.set_socket(io.connect("http://localhost:3000/"));
         //   this.socket.emit("login", this.me);
         // }
-        this.set_socket(io.connect("http://localhost:3000/"));
+        this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
           this.socket.on("update", () => {
             this.get_message({

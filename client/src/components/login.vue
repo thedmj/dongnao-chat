@@ -25,7 +25,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friends","me","socket"])
+    ...mapState(["friends","me","socket","host"])
   },
   methods: {
       ...mapMutations(["set_me","set_socket"]),
@@ -34,7 +34,7 @@ export default {
         var username = this.$refs.username.value;
         var password = this.$refs.password.value;
         $.ajax({
-            url:"http://localhost:3000/login",
+            url:this.host+"login",
             data:{
                 username,
                 password
@@ -44,7 +44,7 @@ export default {
                 if(res.status==0){
                     This.set_me(res);
                     setCookie("user",JSON.stringify(res),1);
-                    This.set_socket(io.connect("http://localhost:3000/"));
+                    This.set_socket(io.connect(this.host));
                     This.socket.emit("login", This.me);
                     This.$router.push("/friends");
                 }

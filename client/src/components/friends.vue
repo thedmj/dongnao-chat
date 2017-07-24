@@ -4,7 +4,7 @@
     <ul>
       <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id,friend)">
         <el-badge :value="friend.unread" class="item">
-          <img :src="'http://localhost:3000/upload/'+friend.logo" alt="" width="60" height="60">
+          <img :src="host+'upload/'+friend.logo" alt="" width="60" height="60">
         </el-badge>
         {{friend.nickname}}{{friend.unread}}
 
@@ -46,7 +46,7 @@
       
     },
     computed: {
-      ...mapState(["friends", "me","socket"])
+      ...mapState(["friends", "me","socket","host"])
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
@@ -57,7 +57,7 @@
       }
       if (this.me) {
         this.getFriends(this.me.id);
-        this.set_socket(io.connect("http://localhost:3000/"));
+        this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
         this.socket.on("addUnread", (data)=> {
           this.addUnread(data);

@@ -4,7 +4,7 @@ import $ from "jquery";
 // import io from "../../../node_modules/socket.io-client/dist/socket.io"
 
 vue.use(vuex);
-let host = "http://localhost:3000/";
+let host = "http://localhost:3000/"; //以后这里要改掉
 let username = "ryan";
 let id = 1;
 let get_friends = host + "user/" + id + "/friends";
@@ -13,6 +13,7 @@ let get_message = host + 'message';
 
 export default new vuex.Store({
     state: {
+        host,
         friends: [],
         posts: [],
         self: [],

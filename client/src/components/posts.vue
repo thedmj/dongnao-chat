@@ -4,7 +4,7 @@
       <li v-for="post in posts" :key="post.postid" class="post">
         <div class="post-item">
           <div class="img">
-            <img :src="'http://localhost:3000/upload/'+post.logo" alt="" >
+            <img :src="host+'upload/'+post.logo" alt="" >
           </div>
           <div class="content">
             <h3 class="nickname">{{post.friendname}}</h3>
@@ -46,7 +46,7 @@
   } from "vuex";
   export default {
     computed: {
-      ...mapState(["posts","me"])
+      ...mapState(["posts","me","host"])
     },
     methods: {
       ...mapActions(["getPosts", "getFriends"]),
