@@ -11,7 +11,7 @@
             <h4>{{post.posttitle}}</h4>
             <p>{{post.postcontent}}</p>
             <div class="star" v-if="post.stars.length>0">
-              <i v-for="(item,$index) in post.stars">{{item.stars_nickname}}  <span v-if="$index != post.stars.length-1">,</span></i>共{{post.stars.length}}个人觉得很赞
+              <i v-for="(item,$index) in post.stars" :key="$index">{{item.stars_nickname}}  <span v-if="$index != post.stars.length-1">,</span></i>共{{post.stars.length}}个人觉得很赞
             </div>
             <div class="comment-item">
               <ul>

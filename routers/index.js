@@ -44,7 +44,6 @@ function mergResult(results){
     for(var i=0;i<results.length;i++){  //遍历寻找postid是否重复 未重复增加一项 重复修改commentcontent
         var result = results[i];
         var index = getIndex(result,r,"postid");
-        console.log(result.stars_u_id?["a"]:[]);
         if(index == -1){
             var o = {
                 postid:result.postid,
@@ -264,8 +263,9 @@ userrouter.post("/:id/post/update", (req, res) => {
 userrouter.post("/:id/upload",upload.single('img'),(req,res)=>{
     console.log(req.file);
     var id = req.params.id;
-    CONNECT.query("UPDATE users SET users.logo = '"+escape(req.file.filename)+"' WHERE id=" + id).then((e) => {
-        res.send(e[0]);
+    CONNECT.query("UPDATE users SET users.logo = '"+escape(req.file.filename)+"' WHERE id=" + id).then((data) => {
+        data[0].logo = escape(req.file.filename);
+        res.send(data[0]);
     });
 });
 
@@ -398,7 +398,6 @@ messagerouter.get("/", function (req, res) {
     }
 })
 
-//登录
 
 
 // router.get("/",(req,res)=>{

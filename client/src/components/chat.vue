@@ -45,7 +45,7 @@
           },
           text: this.text,
           user: {
-            name: this.me.name,
+            name: this.me.nickname,
             id: this.me.id
           },
           type: 'send'
@@ -71,7 +71,7 @@
         this.socket.emit("login", this.me);
           this.socket.on("update", () => {
             this.get_message({
-              user: this.me.name,
+              user: this.me.nickname,
               friend: this.chat_friend.name
             });
           });
@@ -82,7 +82,7 @@
             id:friend_id
           });
           this.get_message({
-            user: this.me.name,
+            user: this.me.nickname,
             friend: this.chat_friend.name
           });
         }

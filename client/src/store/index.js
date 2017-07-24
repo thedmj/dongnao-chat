@@ -33,7 +33,7 @@ export default new vuex.Store({
         set_me(state, o) {
             state.me = {};
             state.me.username = o.username;
-            state.me.name = o.nickname;
+            state.me.nickname = o.nickname;
             state.me.id = o.id;
             state.me.logo = o.logo;
         },

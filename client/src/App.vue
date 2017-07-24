@@ -24,6 +24,7 @@
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
       this.set_me(cookie_user);
+      console.log(cookie_user.status)
       if (cookie_user.status != 0) {
         this.$router.push("/login");
       } else {
@@ -36,7 +37,7 @@
     watch: {
       $route() {
         if (this.me == null) {
-          this.$router.push("/login");
+          // this.$router.push("/login");
         }
       }
     },
