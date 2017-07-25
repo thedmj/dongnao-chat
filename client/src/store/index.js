@@ -4,8 +4,9 @@ import $ from "jquery";
 
 vue.use(vuex);
 let host = "http://localhost:3000/"; //以后这里要改掉
-let get_friends = host + "user/" + id + "/friends";
-let get_posts = host + "user/" + id + "/posts_detail";
+// var id =1;
+// let get_friends = host + "user/" + id + "/friends";
+// let get_posts = host + "user/" + id + "/posts_detail";
 let get_message = host + 'message';
 
 export default new vuex.Store({
@@ -66,9 +67,7 @@ export default new vuex.Store({
         }
     },
     actions: {
-        search_friend({
-            state
-        }, {name, id}) {
+        search_friend({state}, {name, id}) {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: host + "user/" + id + "/search",

@@ -44,7 +44,7 @@ export default {
                 if(res.status==0){
                     This.set_me(res);
                     setCookie("user",JSON.stringify(res),1);
-                    This.set_socket(io.connect(this.host));
+                    This.set_socket(io.connect(This.host));
                     This.socket.emit("login", This.me);
                     This.$router.push("/friends");
                 }

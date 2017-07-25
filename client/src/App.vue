@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <router-view ref="rv"></router-view>
     <button @click="logout">注销</button>
+    <router-view ref="rv"></router-view>
   </div>
 </template>
 
@@ -24,7 +24,6 @@
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
       this.set_me(cookie_user);
-      console.log(cookie_user.status)
       if (cookie_user.status != 0) {
         this.$router.push("/login");
       } else {
@@ -53,13 +52,20 @@
 </script>
 
 <style lang="less">
-  #app {
+  html,body{width:100%;height:100%;}
+  html{font-size:625%;}
+  body{background: #ccc;}
+  #app {box-sizing: border-box;padding:30px;font-size:0.12rem;overflow: auto;
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+    max-width: 7.5rem;
+    height: 100%;
+    margin: auto;
+    background: #fff;
   }
 
   * {

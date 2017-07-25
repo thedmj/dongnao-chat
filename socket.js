@@ -32,8 +32,12 @@ io.on("connection",function(socket){
                     client[user.to.id].emit("get_request",{requestID:result[0].insertId,from:user.from,to:user.to});
                 }
             }
-            
-        })
+        });
+    });
+    socket.on("wearefriend",(userid)=>{
+        if(client[userid]){
+            client[userid].emit("wearefriend");
+        }
     })
 });
 module.exports = {

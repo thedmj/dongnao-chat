@@ -1,23 +1,31 @@
 <template>
   <div class="self" v-if="me">
     <!-- 上传头像start -->
-      
+    <div class="header">
       <el-upload class="avatar-uploader" :class="'uploader'" :name="'img'" :action="action" :show-file-list="false" :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
         <img v-if="me.logo" :src="host+'upload/'+me.logo" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
+      <div class="user-info">
+        <h1 class="nickname">昵称：{{me.nickname}}</h1>
+        </br>
+        <h2 class="username">用户名：{{me.username}}</h2>
+      </div>
       
-    
-    
+
+    </div>
+    <div class="add_friend_btn_wrapper">
+      <el-button type="primary" size="large" @click="show_search" class="add_friend_btn">添加好友</el-button>
+    </div>
+
     <!-- 上传头像end -->
 
 
     <!-- 搜索好友start -->
-    <h1 class="name">{{me.nickname}}</h1></br>
-    <el-button type="primary" size="large" @click="show_search" class="add_friend_btn">添加好友</el-button>
+    
+    
     <el-dialog title="搜索好友" :visible.sync="search_friend_visible" size="tiny" :class="'search_dialog'" :before-close="handleClose">
-
       <form action="">
         <el-input placeholder="请输入昵称，不输入则查找全部" icon="search" v-model="search_name" :on-icon-click="search">
         </el-input>
@@ -26,26 +34,29 @@
         <div class="swiper-wrapper">
           <div class="swiper-slide">
             <ul>
-              <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
-                <h2>{{user.nickname}}</h2>
-                <button @click="sendRequest(me,user)">申请好友</button>
+              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                <div class="right">
+                  <h2>{{user.nickname}}</h2>
+                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                </div>
+              </li>
+              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                <div class="right">
+                  <h2>{{user.nickname}}</h2>
+                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                </div>
+              </li>
+              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                <div class="right">
+                  <h2>{{user.nickname}}</h2>
+                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                </div>
               </li>
             </ul>
-            <ul>
-              <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
-                <h2>{{user.nickname}}</h2>
-                <button @click="sendRequest(me,user)">申请好友</button>
-              </li>
-            </ul>
-            <ul>
-              <li v-for="user in search_friend_result" :key="user.id">
-                <img :src="host+'upload/'+user.logo" alt="" width="60" height="60">
-                <h2>{{user.nickname}}</h2>
-                <button @click="sendRequest(me,user)">申请好友</button>
-              </li>
-            </ul>
+
             <span slot="footer" class="dialog-footer">
             </span>
           </div>
@@ -58,11 +69,22 @@
 
 
     <!-- 搜索好友end -->
+
+
+
+    <!-- 查看请求start -->
     <div class="request">
-      <ul class="get">
+      <el-collapse @change="collapse_handleChange">
+      <el-collapse-item  name="get">
+        <template slot="title">
+          <el-badge :value="num_get_request" class="item">
+            你收到的请求
+          </el-badge>
+        </template>
+        <ul class="get">
         <h5>收到好友申请：</h5>
-        <li v-for="item in request_list.get" :key="item.id">
-          r_id:{{item.r_id}} {{item.nickname}} id:{{item.u_id}}请求添加你为好友 respone:{{item.respone}}
+        <li v-for="item in request_list.get" :key="item.id" class="request-item">
+          {{item.nickname}} 请求添加你为好友 
           <div class="buttons" v-if="item.respone == null">
             <button @click="request_handle(item.u_id,item.r_id,'agree')">同意</button>
             <button @click="request_handle(item.u_id,item.r_id,'refuse')">拒绝</button>
@@ -76,7 +98,14 @@
 
         </li>
       </ul>
-      <ul class="send">
+      </el-collapse-item>
+      <el-collapse-item name="send">
+        <template slot="title">
+          <el-badge :value="num_send_request" class="item">
+            你发出的请求
+          </el-badge>
+        </template>
+        <ul class="send">
         <h5>已发送的好友请求：</h5>
         <li v-for="item in request_list.send" :key="item.id">
           <p v-if="item.respone == null">r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 等待对方验证</p>
@@ -84,7 +113,12 @@
           <p v-else>r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 对方拒绝了你的请求</p>
         </li>
       </ul>
+      </el-collapse-item>
+    </el-collapse>
+      
+      
     </div>
+    <!-- 查看请求end -->
   </div>
 </template>
 
@@ -92,7 +126,8 @@
   import $ from "jquery";
   import Swiper from "swiper";
   import {
-    getCookie,setCookie
+    getCookie,
+    setCookie
   } from "../public/js/cookies.api";
   import io from "../../../node_modules/socket.io-client/dist/socket.io";
   import {
@@ -105,7 +140,10 @@
     upload,
     button,
     dialog,
-    input
+    input,
+    collapse,
+    collapseItem,
+    badge
   } from "element-ui";
 
   export default {
@@ -115,7 +153,8 @@
         search_friend_result: [],
         action: "",
         search_friend_visible: false,
-        swiper: null
+        swiper: null,
+        num_send_request:0
       }
     },
     mounted() {
@@ -128,7 +167,7 @@
         // this.socket = io.connect("http://localhost:3000/");
         // this.socket.emit("login", this.me);
         var id = this.me.id;
-        this.action = this.host+"user/" + id + "/upload";
+        this.action = this.host + "user/" + id + "/upload";
         this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
         this.socket.on("get_request", (data) => { //在线时收到好友请求
@@ -137,6 +176,10 @@
         });
         this.socket.on("request_result", (res) => { //对方验证请求后 看到结果
           this.fetch_request_list(this.me.id);
+        });
+        this.socket.on("wearefriend",()=>{
+          alert("收到啦");
+          this.num_send_request++;
         });
 
 
@@ -157,20 +200,20 @@
         }).then((list) => {
           this.search_friend_result = list;
           this.$nextTick(() => {
-            if(this.swiper){
+            if (this.swiper) {
               this.swiper.update();
-              this.swiper.onResize(); 
-            }else{
+              this.swiper.onResize();
+            } else {
               this.swiper = new Swiper('.swiper-container', {
-                  scrollbar: '.swiper-scrollbar',
-                  direction: 'vertical',
-                  slidesPerView: 'auto',
-                  mousewheelControl: true,
-                  freeMode: true,
-                  roundLengths: true, //防止文字模糊
-                });
+                scrollbar: '.swiper-scrollbar',
+                direction: 'vertical',
+                slidesPerView: 'auto',
+                mousewheelControl: true,
+                freeMode: true,
+                roundLengths: true, //防止文字模糊
+              });
             }
-            
+
           })
         });
       },
@@ -181,10 +224,10 @@
         });
         this.fetch_request_list(this.me.id);
       },
-      request_handle(id, request_id, type) { //同意
+      request_handle(id, request_id, type) { //同意或拒绝
         var This = this;
         $.ajax({
-          url: host + "user/" + id + "/af",
+          url: this.host + "user/" + id + "/af",
           type: "post",
           data: {
             id: this.me.id,
@@ -195,6 +238,7 @@
           success(res) {
             // console.log(res);
             This.fetch_request_list(This.me.id); //成功后重新刷新请求列表
+            This.socket.emit("wearefriend",id);
           }
         });
       },
@@ -204,13 +248,13 @@
         this.me.logo = res.logo;
         this.set_me(this.me);
         var res = {
-          id:this.me.id,
-          nickname:this.me.nickname,
-          username:this.me.username,
-          logo:this.me.logo,
-          status:0
+          id: this.me.id,
+          nickname: this.me.nickname,
+          username: this.me.username,
+          logo: this.me.logo,
+          status: 0
         }
-        setCookie("user",JSON.stringify(res),1);
+        setCookie("user", JSON.stringify(res), 1);
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
@@ -226,20 +270,48 @@
       //搜索好友
       show_search() {
         this.search_friend_visible = true;
-        
+
       },
       handleClose(done) {
         this.search_friend_visible = false;
+      },
+      collapse_handleChange(activeNames){
+        // console.log(activeNames);
+        // console.log(activeNames.indexOf("send"));
+        if(activeNames.indexOf("send")>=0){
+          this.num_send_request=0;
+        }
       }
     },
     computed: {
-      ...mapState(["friends", "me", "request_list", "socket","host"])
+      ...mapState(["friends", "me", "request_list", "socket", "host"]),
+      // num_send_request(){
+      //   var num =0;
+      //   this.request_list.send.map((o)=>{
+      //     if(o.respone == null){
+      //       num ++;
+      //     }
+      //   });
+      //   return num;
+      // },
+      num_get_request(){
+        var num =0;
+        this.request_list.get.map((o)=>{
+          if(o.respone == null){
+            num ++;
+          }
+        });
+        return num;
+      }
     },
     components: {
       "el-upload": upload,
       "el-button": button,
       "el-dialog": dialog,
-      "el-input": input
+      "el-input": input,
+      "el-collapse":collapse,
+      "el-collapse-item":collapseItem,
+      "el-badge":badge
     }
   }
 
@@ -247,62 +319,96 @@
 
 <style lang="less">
   @import "../assets/css/swiper.min.css";
-  .self{width:1000px;margin:auto;text-align: left;
-    .uploader{
+  @media screen and (max-width: 960px) {
+      .el-dialog.el-dialog--tiny{width:70%;}
+  }
+  @media screen and (max-width: 400px) {
+      .el-dialog.el-dialog--tiny{width:70%;}
+      .self{
+        .search_dialog{
+          .friend-item{
+            .right{padding-left: 0;}
+          }
+        }
+        
+      }
+  }
+  .self {
+    width: 100%;
+    margin: auto;
+    text-align: left;
+    .header{display: flex;justify-content:space-between;margin-bottom: 30px;}
+    .uploader {
       text-align: left;
       display: inline-block;
-      width:160px;
-      height:160px;
+      width: 160px;
+      flex-shrink:0;
+      height: 160px;
       vertical-align: bottom;
-      img{width:100%;height:100%; }
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
-    .name{display: inline-block;}
-    .add_friend_btn{vertical-align: bottom;}
-    .search_dialog{text-align: center;vertical-align: top;}
+    .user-info {align-self:center;width:190px;
+      .nickname {font-size:0.16rem;}
+      .username {color: #999;font-size:0.16rem;}
+    }
+    .add_friend_btn_wrapper{}
+    .add_friend_btn {vertical-align: bottom;width:100%;}
+    .search_dialog {
+      text-align: center;
+      vertical-align: top;
+      .search_friend_box{padding:30px;}
+      .friend-item{margin-bottom: 10px;}
+      .right{display: inline-block;vertical-align: top;padding-left: 30px;}
+    }
+    .request{
+      .request-item{border-bottom:1px solid #ccc; }
+    }
 
     .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .avatar-uploader .el-upload:hover {
-    border-color: #20a0ff;
-  }
+    .avatar-uploader .el-upload:hover {
+      border-color: #20a0ff;
+    }
 
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
 
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
 
-  .swiper-container {
-    width: 100%;
-    height: 500px;
-  }
+    .swiper-container {
+      width: 100%;
+      height: 500px;
+    }
 
-  .swiper-slide {
-    font-size: 18px;
-    height: auto;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 30px;
-    font-size: 13px;
-    font-family: microsoft yahei;
-    line-height: 1.8;
+    .swiper-slide {
+      font-size: 18px;
+      height: auto;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 30px;
+      font-size: 13px;
+      font-family: microsoft yahei;
+      line-height: 1.8;
+    }
   }
-  }
-  
 
 </style>
