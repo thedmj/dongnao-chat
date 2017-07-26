@@ -30,11 +30,15 @@ export default new vuex.Store({
     getters: {},
     mutations: {
         set_me(state, o) {
-            state.me = {};
-            state.me.username = o.username;
-            state.me.nickname = o.nickname;
-            state.me.id = o.id;
-            state.me.logo = o.logo;
+            if(o != null){
+                state.me = {};
+                state.me.username = o.username;
+                state.me.nickname = o.nickname;
+                state.me.id = o.id;
+                state.me.logo = o.logo;
+            }else{
+                state.me = null;
+            }
         },
         set_chat_friend(state, friend) {
             state.chat_friend.name = friend.name;
@@ -101,9 +105,7 @@ export default new vuex.Store({
             });
             
         },
-        getFriends({
-            state
-        }, id) {
+        getFriends({state}, id) {
             $.ajax({
                 url: host + "user/" + id + "/friends",
                 type: "get",

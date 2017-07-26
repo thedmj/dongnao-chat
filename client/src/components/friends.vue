@@ -1,20 +1,20 @@
 <template>
   <div class="friends">
-    <h3>好友列表</h3>
     <ul>
       <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id,friend)">
         <el-badge :value="friend.unread" class="item">
-          <img :src="host+'upload/'+friend.logo" alt="" width="60" height="60">
+          <img :src="host+'upload/'+friend.logo" alt="" width="90" height="90">
         </el-badge>
-        {{friend.nickname}}{{friend.unread}}
-
+        <div class="nickname">{{friend.nickname}}</div>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-  import {getCookie} from "../public/js/cookies.api";
+  import {
+    getCookie
+  } from "../public/js/cookies.api";
   import {
     mapState,
     mapGetters,
@@ -29,45 +29,49 @@
   export default {
     data() {
       return {
-        
+
       }
     },
     methods: {
       ...mapActions(["getFriends"]),
-      ...mapMutations(["set_chat_friend", "set_me","addUnread","clearUnread","set_socket"]),
-      chat(username, id,friend) {
-        this.$router.push("/chat" + "?username=" + username+"&id="+id);
+      ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket"]),
+      chat(username, id, friend) {
+        this.$router.push("/chat" + "?username=" + username + "&id=" + id);
         this.set_chat_friend({
           name: username,
           id
         });
         this.clearUnread(id)
       }
-      
+
     },
     computed: {
-      ...mapState(["friends", "me","socket","host"])
+      ...mapState(["friends", "me", "socket", "host"])
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
-      this.set_me(cookie_user);
-      
+
+
       if (!cookie_user) {
         this.$router.push("/login");
-      }
+        this.set_me(null);
+      } else {
+        this.set_me(cookie_user);
       if (this.me) {
         this.getFriends(this.me.id);
         this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
-        this.socket.on("addUnread", (data)=> {
+        this.socket.on("addUnread", (data) => {
           this.addUnread(data);
         });
-        this.socket.on("get_request",(data)=>{ //在线时收到好友请求
+        this.socket.on("get_request", (data) => { //在线时收到好友请求
           console.log(data);
           // this.fetch_request_list(this.me.id);
           alert("你收到一个好友请求")
-      });
+        });
       }
+      }
+      
     },
     components: {
       "el-badge": Badge
@@ -77,6 +81,11 @@
 </script>
 
 <style lang="less">
-  
 
+.friends{
+  ul{text-align: left;
+    li{border-bottom: 1px solid #ccc;}
+  }
+  .nickname{display: inline-block;font-size: 28px;vertical-align: middle;}
+}
 </style>

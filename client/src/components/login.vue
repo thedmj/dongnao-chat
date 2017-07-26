@@ -22,6 +22,8 @@ export default {
     var cookie_user =JSON.parse(getCookie("user"));
     if(cookie_user){
         this.$router.push("/friends");
+    }else{
+        this.me=null;
     }
   },
   computed: {

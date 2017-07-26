@@ -6,7 +6,7 @@
           <div class="img">
             <img :src="host+'upload/'+post.logo" alt="" >
           </div>
-          <div class="content">
+          <div class="post-content">
             <h3 class="nickname">{{post.friendname}}</h3>
             <h4>{{post.posttitle}}</h4>
             <p>{{post.postcontent}}</p>
@@ -54,14 +54,18 @@
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
-      this.set_me(cookie_user);
+      
       if (!cookie_user) {
         this.$router.push("/login");
+        this.set_me(null);
+      }else{
+        this.set_me(cookie_user);
+        if (this.me) {
+          this.getPosts(this.me.id);
+        }
       }
-      console.log(cookie_user)
-      if (this.me) {
-        this.getPosts(this.me.id);
-      }
+      
+      
 
     }
   }
@@ -76,7 +80,7 @@
         .img{margin-right:10px; width:10%;
           img{width:100%;}
         }
-        .content{text-align: left;width:90%;;
+        .post-content{text-align: left;width:90%;;
           .comment-item{word-wrap : break-word;background: #eee;font-size:14px;}
           .nickname{color:#1c95e2;}
         }

@@ -17,27 +17,27 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'login',
+      name: '登录',
       component: login
     },
     {
       path: '/friends',
-      name: 'friends',
+      name: '朋友',
       component: friends
     },
     {
       path: '/chat',
-      name: 'chat',
+      name: '聊天',
       component: chat
     },
     {
       path: '/self',
-      name: 'self',
+      name: '我',
       component: self
     },
     {
       path: '/posts',
-      name: 'posts',
+      name: '朋友圈',
       component: posts
     }
   ]

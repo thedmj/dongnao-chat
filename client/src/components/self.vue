@@ -12,20 +12,24 @@
         </br>
         <h2 class="username">用户名：{{me.username}}</h2>
       </div>
-      
+
 
     </div>
     <div class="add_friend_btn_wrapper">
-      <el-button type="primary" size="large" @click="show_search" class="add_friend_btn">添加好友</el-button>
+      <el-button type="primary" size="large" @click="showSlideBox = true" class="add_friend_btn">添加好友</el-button>
     </div>
 
     <!-- 上传头像end -->
 
 
     <!-- 搜索好友start -->
-    
-    
-    <el-dialog title="搜索好友" :visible.sync="search_friend_visible" size="tiny" :class="'search_dialog'" :before-close="handleClose">
+
+
+    <!-- <el-dialog title="搜索好友" :visible.sync="search_friend_visible" size="tiny" :class="'search_dialog'" :before-close="handleClose">
+      
+    </el-dialog> -->
+
+     <div class="slide-box" v-if="showSlideBox">
       <form action="">
         <el-input placeholder="请输入昵称，不输入则查找全部" icon="search" v-model="search_name" :on-icon-click="search">
         </el-input>
@@ -41,31 +45,20 @@
                   <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
                 </div>
               </li>
-              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
-                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
-                <div class="right">
-                  <h2>{{user.nickname}}</h2>
-                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
-                </div>
-              </li>
-              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
-                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
-                <div class="right">
-                  <h2>{{user.nickname}}</h2>
-                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
-                </div>
-              </li>
+              
             </ul>
 
             <span slot="footer" class="dialog-footer">
             </span>
           </div>
         </div>
-        <!-- Add Scroll Bar -->
+        
         <div class="swiper-scrollbar"></div>
       </div>
-
-    </el-dialog>
+      <div class="back-btn-wrapper">
+        <el-button type="primary" size="large" @click="showSlideBox=false" class="back-btn">返回</el-button>
+      </div>
+    </div> 
 
 
     <!-- 搜索好友end -->
@@ -75,50 +68,53 @@
     <!-- 查看请求start -->
     <div class="request">
       <el-collapse @change="collapse_handleChange">
-      <el-collapse-item  name="get">
-        <template slot="title">
-          <el-badge :value="num_get_request" class="item">
-            你收到的请求
-          </el-badge>
-        </template>
-        <ul class="get">
-        <h5>收到好友申请：</h5>
-        <li v-for="item in request_list.get" :key="item.id" class="request-item">
-          {{item.nickname}} 请求添加你为好友 
-          <div class="buttons" v-if="item.respone == null">
-            <button @click="request_handle(item.u_id,item.r_id,'agree')">同意</button>
-            <button @click="request_handle(item.u_id,item.r_id,'refuse')">拒绝</button>
-          </div>
-          <p v-else-if="item.respone == 1">
-            已经同意了
-          </p>
-          <p v-else>
-            已经拒绝了
-          </p>
+        <el-collapse-item name="get">
+          <template slot="title">
+            <el-badge :value="num_get_request" class="item">
+              你收到的请求
+            </el-badge>
+          </template>
+          <ul class="get">
+            <h5>收到好友申请：</h5>
+            <li v-for="item in request_list.get" :key="item.id" class="request-item">
+              {{item.nickname}} 请求添加你为好友
+              <div class="buttons" v-if="item.respone == null">
+                <button @click="request_handle(item.u_id,item.r_id,'agree')">同意</button>
+                <button @click="request_handle(item.u_id,item.r_id,'refuse')">拒绝</button>
+              </div>
+              <p v-else-if="item.respone == 1">
+                已经同意了
+              </p>
+              <p v-else>
+                已经拒绝了
+              </p>
 
-        </li>
-      </ul>
-      </el-collapse-item>
-      <el-collapse-item name="send">
-        <template slot="title">
-          <el-badge :value="num_send_request" class="item">
-            你发出的请求
-          </el-badge>
-        </template>
-        <ul class="send">
-        <h5>已发送的好友请求：</h5>
-        <li v-for="item in request_list.send" :key="item.id">
-          <p v-if="item.respone == null">r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 等待对方验证</p>
-          <p v-else-if="item.respone == 1">r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 对方接受了你的请求</p>
-          <p v-else>r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 对方拒绝了你的请求</p>
-        </li>
-      </ul>
-      </el-collapse-item>
-    </el-collapse>
-      
-      
+            </li>
+          </ul>
+        </el-collapse-item>
+        <el-collapse-item name="send">
+          <template slot="title">
+            <el-badge :value="num_send_request" class="item">
+              你发出的请求
+            </el-badge>
+          </template>
+          <ul class="send">
+            <h5>已发送的好友请求：</h5>
+            <li v-for="item in request_list.send" :key="item.id">
+              <p v-if="item.respone == null">r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 等待对方验证</p>
+              <p v-else-if="item.respone == 1">r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 对方接受了你的请求</p>
+              <p v-else>r_id:{{item.r_id}} 你请求{{item.nickname}} id:{{item.u_id}}为好友 对方拒绝了你的请求</p>
+            </li>
+          </ul>
+        </el-collapse-item>
+      </el-collapse>
+
+
     </div>
     <!-- 查看请求end -->
+    <div class="logout-wrapper">
+      <el-button class="logout_btn" type="danger" size="small" @click="logout">登 出</el-button>
+    </div>
   </div>
 </template>
 
@@ -127,7 +123,8 @@
   import Swiper from "swiper";
   import {
     getCookie,
-    setCookie
+    setCookie,
+    removeCookie
   } from "../public/js/cookies.api";
   import io from "../../../node_modules/socket.io-client/dist/socket.io";
   import {
@@ -143,7 +140,8 @@
     input,
     collapse,
     collapseItem,
-    badge
+    badge,
+    Message
   } from "element-ui";
 
   export default {
@@ -154,20 +152,23 @@
         action: "",
         search_friend_visible: false,
         swiper: null,
-        num_send_request:0
+        num_send_request: 0,
+        showSlideBox:false
       }
     },
     mounted() {
       var cookie_user = JSON.parse(getCookie("user"));
-      this.set_me(cookie_user);
+
       if (!cookie_user) {
-        console.log("no cookie")
         this.$router.push("/login");
+        this.set_me(null);
       } else {
         // this.socket = io.connect("http://localhost:3000/");
         // this.socket.emit("login", this.me);
+        this.set_me(cookie_user);
         var id = this.me.id;
         this.action = this.host + "user/" + id + "/upload";
+        this.getFriends(this.me.id);
         this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
         this.socket.on("get_request", (data) => { //在线时收到好友请求
@@ -177,17 +178,17 @@
         this.socket.on("request_result", (res) => { //对方验证请求后 看到结果
           this.fetch_request_list(this.me.id);
         });
-        this.socket.on("wearefriend",()=>{
+        this.socket.on("wearefriend", () => {
           alert("收到啦");
           this.num_send_request++;
         });
-
+        this.fetch_request_list(this.me.id).then((data) => { //获取请求列表
+          // console.log(data)
+        });
 
 
       }
-      this.fetch_request_list(this.me.id).then((data) => { //获取请求列表
-        // console.log(data)
-      });
+
     },
     methods: {
       ...mapActions(["getFriends", "search_friend", "fetch_request_list"]),
@@ -218,11 +219,27 @@
         });
       },
       sendRequest(from, to) {
-        this.socket.emit("friend_request", {
-          from,
-          to
-        });
-        this.fetch_request_list(this.me.id);
+        var isFriend = false
+        for (var i = 0; i < this.friends.length; i++) {
+          if (this.friends[i].id == to.id) {
+            isFriend = true;
+            break;
+          }
+        }
+        if (!isFriend) {
+          this.socket.emit("friend_request", {
+            from,
+            to
+          });
+          this.fetch_request_list(this.me.id);
+          Message({
+            message: '成功发出请求',
+            type: 'success'
+          });
+        } else {
+          Message.error('你们已经是好友了，请不要重复添加。');
+        }
+
       },
       request_handle(id, request_id, type) { //同意或拒绝
         var This = this;
@@ -238,7 +255,7 @@
           success(res) {
             // console.log(res);
             This.fetch_request_list(This.me.id); //成功后重新刷新请求列表
-            This.socket.emit("wearefriend",id);
+            This.socket.emit("wearefriend", id);
           }
         });
       },
@@ -275,13 +292,18 @@
       handleClose(done) {
         this.search_friend_visible = false;
       },
-      collapse_handleChange(activeNames){
+      collapse_handleChange(activeNames) {
         // console.log(activeNames);
         // console.log(activeNames.indexOf("send"));
-        if(activeNames.indexOf("send")>=0){
-          this.num_send_request=0;
+        if (activeNames.indexOf("send") >= 0) {
+          this.num_send_request = 0;
         }
-      }
+      },
+      logout() {
+        removeCookie("user");
+        this.$router.push("/login");
+        this.set_me(null);
+      },
     },
     computed: {
       ...mapState(["friends", "me", "request_list", "socket", "host"]),
@@ -294,11 +316,11 @@
       //   });
       //   return num;
       // },
-      num_get_request(){
-        var num =0;
-        this.request_list.get.map((o)=>{
-          if(o.respone == null){
-            num ++;
+      num_get_request() {
+        var num = 0;
+        this.request_list.get.map((o) => {
+          if (o.respone == null) {
+            num++;
           }
         });
         return num;
@@ -309,40 +331,43 @@
       "el-button": button,
       "el-dialog": dialog,
       "el-input": input,
-      "el-collapse":collapse,
-      "el-collapse-item":collapseItem,
-      "el-badge":badge
+      "el-collapse": collapse,
+      "el-collapse-item": collapseItem,
+      "el-badge": badge
     }
   }
 
 </script>
 
 <style lang="less">
-  @import "../assets/css/swiper.min.css";
-  @media screen and (max-width: 960px) {
-      .el-dialog.el-dialog--tiny{width:70%;}
-  }
-  @media screen and (max-width: 400px) {
-      .el-dialog.el-dialog--tiny{width:70%;}
-      .self{
-        .search_dialog{
-          .friend-item{
-            .right{padding-left: 0;}
-          }
-        }
-        
-      }
-  }
+  // @import "../assets/css/swiper.min.css";
+  // @media screen and (max-width: 960px) {
+  //     .el-dialog.el-dialog--tiny{width:70%;}
+  // }
+  // @media screen and (max-width: 400px) {
+  //     .el-dialog.el-dialog--tiny{width:70%;}
+  //     .self{
+  //       .search_dialog{
+  //         .friend-item{
+  //           .right{padding-left: 0;}
+  //         }
+  //       }
+  //     }
+  // }
   .self {
     width: 100%;
     margin: auto;
     text-align: left;
-    .header{display: flex;justify-content:space-between;margin-bottom: 30px;}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
     .uploader {
       text-align: left;
       display: inline-block;
       width: 160px;
-      flex-shrink:0;
+      flex-shrink: 0;
       height: 160px;
       vertical-align: bottom;
       img {
@@ -350,21 +375,67 @@
         height: 100%;
       }
     }
-    .user-info {align-self:center;width:190px;
-      .nickname {font-size:0.16rem;}
-      .username {color: #999;font-size:0.16rem;}
+    .user-info {
+      align-self: center;
+      width: 190px;
+      .nickname {
+        font-size: 0.16rem;
+      }
+      .username {
+        color: #999;
+        font-size: 0.16rem;
+      }
     }
-    .add_friend_btn_wrapper{}
-    .add_friend_btn {vertical-align: bottom;width:100%;}
-    .search_dialog {
+    .add_friend_btn_wrapper {}
+    .add_friend_btn {
+      vertical-align: bottom;
+      width: 100%;
+    }
+    .slide-box {
+      z-index: 1;
       text-align: center;
       vertical-align: top;
-      .search_friend_box{padding:30px;}
-      .friend-item{margin-bottom: 10px;}
-      .right{display: inline-block;vertical-align: top;padding-left: 30px;}
+      .search_friend_box {
+        padding: 30px;
+      }
+      .friend-item {
+        margin-bottom: 10px;
+      }
+      .right {
+        display: inline-block;
+        vertical-align: top;
+        padding-left: 30px;
+      }
     }
-    .request{
-      .request-item{border-bottom:1px solid #ccc; }
+    .el-dialog.el-dialog--tiny {
+      height: 60%;
+      overflow: hidden;
+    }
+
+    .slide-box {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      bottom: 0;
+      background: #fff;
+      overflow: hidden;
+      padding:30px;
+      box-sizing: border-box;
+      .back-btn{
+        position: absolute;left: 0;bottom: 0;width:100%;height:60px;
+        .back-btn{width:100%;height:100%;}
+      }
+    }
+    .request {
+      .request-item {
+        border-bottom: 1px solid #ccc;
+      }
+    }
+    .logout-wrapper {
+      .logout_btn {
+        width: 100%;
+      }
     }
 
     .avatar-uploader .el-upload {
@@ -395,8 +466,12 @@
     }
 
     .swiper-container {
+      position: absolute;
+      left: 0;
+      top:90px;
+      bottom:60px;
       width: 100%;
-      height: 500px;
+      overflow: hidden;
     }
 
     .swiper-slide {
