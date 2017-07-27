@@ -321,7 +321,10 @@
       logout() {
         removeCookie("user");
         this.$router.push("/login");
+        this.socket.emit("logout",this.me.id);
         this.set_me(null);
+        
+        this.socket.close();
       },
     },
     computed: {
@@ -411,6 +414,7 @@
     .add_friend_btn {
       vertical-align: bottom;
       width: 100%;
+      margin-top: 30px;
     }
     .slide-box {
       z-index: 1;
@@ -515,6 +519,11 @@
       line-height: 1.8;
     }
   }
-  // .slide-enter{}
-
+  
+.slide-enter-active, .slide-leave-active {
+  transition: opacity .5s
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0
+}
 </style>

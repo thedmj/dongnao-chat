@@ -68,6 +68,14 @@ export default new vuex.Store({
         },
         set_socket(state,socket){
             state.socket = socket;
+        },
+        set_unread(state,data){
+            state.friends.map((item)=>{
+                if(item.id == data.id){
+                    item.unread = data.num;
+                }
+                return item;
+            })
         }
     },
     actions: {
@@ -106,20 +114,24 @@ export default new vuex.Store({
             
         },
         getFriends({state}, id) {
-            $.ajax({
-                url: host + "user/" + id + "/friends",
-                type: "get",
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        if (!state.friends[i]) {
-                            data[i].unread = 0;
-                        } else {
-                            data[i].unread = state.friends[i].unread;
+            return new Promise((resolve,reject)=>{
+                $.ajax({
+                    url: host + "user/" + id + "/friends",
+                    type: "get",
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if (!state.friends[i]) {
+                                data[i].unread = 0;
+                            } else {
+                                data[i].unread = state.friends[i].unread;
+                            }
                         }
+                        state.friends = data;
+                        resolve(data);
                     }
-                    state.friends = data;
-                }
+                });
             });
+            
         },
         getPosts({state},id) {
             $.ajax({
@@ -130,21 +142,24 @@ export default new vuex.Store({
                 }
             });
         },
-        get_message({state}) {
-            $.ajax({
-                url: get_message,
-                data: {
-                    user: state.me.id,
-                    friend: state.chat_friend.id
-                },
-                success: function (data) {
-                    
-                    for (var i = 0; i < data.length; i++) {
-                        data[i] = JSON.parse(data[i]);
+        get_message({state},data) {
+            return new Promise((resolve,reject)=>{
+                $.ajax({
+                    url: get_message,
+                    data: {
+                        user: data.userid,
+                        friend: data.friendid
+                    },
+                    success: function (result) {
+                        for (var i = 0; i < result.length; i++) {
+                            result[i] = JSON.parse(result[i]);
+                        }
+                        state.message = result;
+                        resolve({data:result,friendID:data.friendid});
                     }
-                    state.message = data;
-                }
-            });
+                });
+            })
+            
         },
         
     }

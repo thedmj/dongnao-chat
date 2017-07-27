@@ -33,15 +33,15 @@
       }
     },
     methods: {
-      ...mapActions(["getFriends"]),
-      ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket"]),
+      ...mapActions(["getFriends","get_message"]),
+      ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_unread"]),
       chat(username, id, friend) {
         this.$router.push("/chat" + "?username=" + username + "&id=" + id);
         this.set_chat_friend({
           name: username,
           id
         });
-        this.clearUnread(id)
+        // this.clearUnread(id)  //清空unread
       }
 
     },
@@ -58,7 +58,25 @@
       } else {
         this.set_me(cookie_user);
       if (this.me) {
-        this.getFriends(this.me.id);
+        this.getFriends(this.me.id).then((friends)=>{
+          console.log(friends);
+          for(let i=0;i<friends.length;i++){
+            this.get_message({
+              userid: this.me.id,
+              friendid: friends[i].id
+            }).then((message)=>{
+              var num =0;
+              console.log(message)
+              for(let j=0;j<message.data.length;j++){
+                if(message.data[j].readed == false){
+                  num++;
+                }
+              }
+              // console.log(message.friendID,num);
+              this.set_unread({id:message.friendID,num}) //设置未读消息数量
+            })
+          }
+        });
         this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
         this.socket.on("addUnread", (data) => {

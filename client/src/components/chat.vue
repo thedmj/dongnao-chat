@@ -34,10 +34,9 @@
       }
     },
     methods: {
-      ...mapMutations(["set_me","set_socket","set_chat_friend"]),
-      ...mapActions(["get_message", "send_message", "getFriends"]),
-      sendMessage() {
-        
+      ...mapMutations(["set_me","set_socket","set_chat_friend","clearUnread"]),
+      ...mapActions(["get_message", "send_message", "getFriends","clear_unread"]),
+      sendMessage() {                                                       //发送消息
         this.socket.emit("message", {
           friend: {
             name: this.chat_friend.name,
@@ -48,6 +47,8 @@
             name: this.me.nickname,
             id: this.me.id
           },
+          sendTime:(new Date()).valueOf(),
+          readed:false,
           type: 'send'
         });
         this.text = "";
@@ -69,26 +70,39 @@
         // }
         this.set_socket(io.connect(this.host));
         this.socket.emit("login", this.me);
-          this.socket.on("update", () => {
-            this.get_message({
-              user: this.me.nickname,
-              friend: this.chat_friend.name
-            });
+        this.socket.on("update", () => {
+          this.get_message({
+            userid: this.me.id,
+            friendid: this.chat_friend.id
           });
+          this.socket.emit("clearunread",{
+            userid: this.me.id,
+            friendid: this.chat_friend.id
+          });
+          
+        });
         if (this.$route.query.username) {
           var username = this.$route.query.username;
           this.set_chat_friend({
             name: friend_name,
             id:friend_id
           });
+          
           this.get_message({
-            user: this.me.nickname,
-            friend: this.chat_friend.name
+            userid: this.me.id,
+            friendid: this.chat_friend.id
           });
         }
       } else {
         this.$router.push("/login");
       }
+      this.socket.emit("clearunread",{
+        userid: this.me.id,
+        friendid: this.chat_friend.id
+      });
+      this.socket.on("clearAll",()=>{
+        // alert("clear");
+      })
     },
     components: {
       Avatar
