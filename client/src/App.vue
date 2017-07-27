@@ -90,7 +90,7 @@
     margin: auto;
     background: #fff;
     .title{height:60px;line-height: 60px;background: #000;color:#fff;position: absolute;left: 0;top:0;width:100%;font-size: 16px;z-index: 9;}
-    .content{position: absolute;top:60px;bottom:60px;overflow: auto;box-sizing: border-box;padding:30px;width:100%;}
+    .content{position: absolute;top:60px;bottom:60px;overflow: auto;box-sizing: border-box;padding:30px;padding-bottom: 0;width:100%;}
     .menu{position: absolute;left: 0;bottom: 0;width: 100%;z-index:9;
       ul{display: flex;
         li{flex-grow:1;}

@@ -12,9 +12,12 @@
         </br>
         <h2 class="username">用户名：{{me.username}}</h2>
       </div>
-
-
     </div>
+    <!-- 退出按钮start -->
+    <div class="logout-wrapper">
+      <el-button class="logout_btn" type="danger" size="large" @click="logout">登 出</el-button>
+    </div>
+    <!-- 退出按钮end -->
     <div class="add_friend_btn_wrapper">
       <el-button type="primary" size="large" @click="showSlideBox = true" class="add_friend_btn">添加好友</el-button>
     </div>
@@ -28,37 +31,53 @@
     <!-- <el-dialog title="搜索好友" :visible.sync="search_friend_visible" size="tiny" :class="'search_dialog'" :before-close="handleClose">
       
     </el-dialog> -->
+    <transition name="slide">
+      <div class="slide-box" v-show="showSlideBox">
+        <form action="">
+          <el-input placeholder="请输入昵称，不输入则查找全部" icon="search" v-model="search_name" :on-icon-click="search">
+          </el-input>
+        </form>
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <ul>
+                <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                  <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                  <div class="right">
+                    <h2>{{user.nickname}}</h2>
+                    <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                  </div>
+                </li>
 
-     <div class="slide-box" v-if="showSlideBox">
-      <form action="">
-        <el-input placeholder="请输入昵称，不输入则查找全部" icon="search" v-model="search_name" :on-icon-click="search">
-        </el-input>
-      </form>
-      <div class="swiper-container">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <ul>
-              <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
-                <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
-                <div class="right">
-                  <h2>{{user.nickname}}</h2>
-                  <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
-                </div>
-              </li>
-              
-            </ul>
+                <!-- <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                  <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                  <div class="right">
+                    <h2>{{user.nickname}}</h2>
+                    <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                  </div>
+                </li>
 
-            <span slot="footer" class="dialog-footer">
+                <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
+                  <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                  <div class="right">
+                    <h2>{{user.nickname}}</h2>
+                    <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
+                  </div>
+                </li> -->
+              </ul>
+              <span slot="footer" class="dialog-footer">
             </span>
+            </div>
           </div>
+
+          <div class="swiper-scrollbar"></div>
         </div>
-        
-        <div class="swiper-scrollbar"></div>
+        <div class="back-btn-wrapper">
+          <el-button type="primary" size="large" @click="showSlideBox=false" class="back-btn">返回</el-button>
+        </div>
       </div>
-      <div class="back-btn-wrapper">
-        <el-button type="primary" size="large" @click="showSlideBox=false" class="back-btn">返回</el-button>
-      </div>
-    </div> 
+    </transition>
+
 
 
     <!-- 搜索好友end -->
@@ -112,9 +131,8 @@
 
     </div>
     <!-- 查看请求end -->
-    <div class="logout-wrapper">
-      <el-button class="logout_btn" type="danger" size="small" @click="logout">登 出</el-button>
-    </div>
+
+    
   </div>
 </template>
 
@@ -153,7 +171,7 @@
         search_friend_visible: false,
         swiper: null,
         num_send_request: 0,
-        showSlideBox:false
+        showSlideBox: false
       }
     },
     mounted() {
@@ -212,6 +230,7 @@
                 mousewheelControl: true,
                 freeMode: true,
                 roundLengths: true, //防止文字模糊
+                scrollbarHide:false,
               });
             }
 
@@ -340,7 +359,7 @@
 </script>
 
 <style lang="less">
-  // @import "../assets/css/swiper.min.css";
+  @import "../assets/css/swiper.min.css";
   // @media screen and (max-width: 960px) {
   //     .el-dialog.el-dialog--tiny{width:70%;}
   // }
@@ -356,6 +375,8 @@
   // }
   .self {
     width: 100%;
+    height:100%;
+    overflow: auto;
     margin: auto;
     text-align: left;
     .header {
@@ -417,14 +438,24 @@
       width: 100%;
       height: 100%;
       left: 0;
-      bottom: 0;
+      top:0;
+      bottom: 60px;
       background: #fff;
       overflow: hidden;
-      padding:30px;
+      padding: 30px;
+      // padding-top:90px;
       box-sizing: border-box;
-      .back-btn{
-        position: absolute;left: 0;bottom: 0;width:100%;height:60px;
-        .back-btn{width:100%;height:100%;}
+      // transform: translate3d(0,100%,0);
+      .back-btn-wrapper {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        .back-btn {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
     .request {
@@ -468,8 +499,8 @@
     .swiper-container {
       position: absolute;
       left: 0;
-      top:90px;
-      bottom:60px;
+      top: 90px;
+      bottom: 60px;
       width: 100%;
       overflow: hidden;
     }
@@ -479,11 +510,11 @@
       height: auto;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
-      padding: 30px;
       font-size: 13px;
       font-family: microsoft yahei;
       line-height: 1.8;
     }
   }
+  // .slide-enter{}
 
 </style>
