@@ -23,7 +23,7 @@ export default {
     if(cookie_user){
         this.$router.push("/friends");
     }else{
-        this.me=null;
+        this.set_me(null);
     }
   },
   computed: {
