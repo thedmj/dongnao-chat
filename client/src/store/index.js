@@ -3,8 +3,9 @@ import vuex from "vuex";
 import $ from "jquery";
 
 vue.use(vuex);
-let host = "http://localhost:3000/"; //以后这里要改掉
+// let host = "http://localhost:3000/"; //以后这里要改掉
 // let host = "http://192.168.168.111:3000/";
+let host = "http://115.159.106.78/";
 // var id =1;
 // let get_friends = host + "user/" + id + "/friends";
 // let get_posts = host + "user/" + id + "/posts_detail";
