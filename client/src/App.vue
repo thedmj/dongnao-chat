@@ -78,7 +78,7 @@
   @media screen and (max-width: 750px){
     #app{width:100%;}
   }
-  #app {box-sizing: border-box;font-size:0.12rem;overflow: auto;position: relative;;
+  #app {box-sizing: border-box;font-size:0.12rem;overflow: auto;position: relative;background:#f5f5f5;
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -90,7 +90,7 @@
     margin: auto;
     background: #fff;
     .title{height:60px;line-height: 60px;background: #000;color:#fff;position: absolute;left: 0;top:0;width:100%;font-size: 16px;z-index: 9;}
-    .content{position: absolute;top:60px;bottom:60px;overflow: auto;box-sizing: border-box;padding:30px;padding-bottom: 0;width:100%;}
+    .content{position: absolute;top:60px;bottom:60px;overflow: auto;box-sizing: border-box;width:100%;}
     .menu{position: absolute;left: 0;bottom: 0;width: 100%;z-index:9;
       ul{display: flex;
         li{flex-grow:1;}

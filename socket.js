@@ -9,6 +9,9 @@ var client = {};
 
 io.on("connection", function (socket) {
     socket.on("login", (user) => { //连接时保存下用户的socket连接
+        if(client[user.id]){
+            client[user.id].emit("logout");
+        }
         client[user.id] = socket;
     });
     socket.on("logout",(id)=>{
@@ -16,9 +19,7 @@ io.on("connection", function (socket) {
     });
     socket.on("clearunread",(o)=>{
         var key = o.userid + "_" +o.friendid ;
-        console.log(key);
         redis.lrange(key,0,-1,(err,data)=>{
-            console.log(data);
             for(let i=0;i<data.length;i++){
                 data[i] = JSON.parse(data[i]);
                 data[i].readed = true;

@@ -1,16 +1,14 @@
 <template>
     <div class="login">
-        <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" :label-position="'left'">
+        <el-form :model="ruleForm2"  ref="ruleForm2" label-width="100px" class="demo-ruleForm" :label-position="'left'">
             <el-form-item label="用户名" prop="username">
-                <el-input v-model.number="ruleForm2.age"></el-input>
+                <el-input v-model.number="ruleForm2.username"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="pass">
                 <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="checkPass">
-                <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm2')">登录</el-button>
+            
+            <el-button type="primary" @click="submit">登录</el-button>
             <!-- <el-button @click="resetForm('ruleForm2')">重置</el-button> -->
         </el-form>
         <!-- <input type="text" v-model="username" ref="username">
@@ -36,39 +34,22 @@ export default {
       var validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
-          }
-          callback();
-        }
+        } 
       };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
+      
       return {
         ruleForm2: {
           pass: '',
-          checkPass: '',
           username: ''
         },
-        rules2: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          username: [
-            { validator: checkUsername, trigger: 'blur' }
-          ]
-        }
+        // rules2: {
+        //   pass: [
+        //     { validator: validatePass, trigger: 'blur' }
+        //   ],
+        //   username: [
+        //     { validator: checkUsername, trigger: 'blur' }
+        //   ]
+        // }
       };
   },
   mounted () {
@@ -78,16 +59,23 @@ export default {
     }else{
         this.set_me(null);
     }
+    document.addEventListener("keydown",this.keydownHandler,false);
   },
   computed: {
     ...mapState(["friends","me","socket","host"])
   },
   methods: {
       ...mapMutations(["set_me","set_socket"]),
+      keydownHandler(e){
+        if(e && e.keyCode == 13){
+          this.submit();
+        }
+      },
       submit(){
+        console.log("submit")
         var This = this;
-        var username = this.$refs.username.value;
-        var password = this.$refs.password.value;
+        var username = this.ruleForm2.username;
+        var password = this.ruleForm2.pass;
         $.ajax({
             url:this.host+"login",
             data:{
@@ -99,7 +87,11 @@ export default {
                 if(res.status==0){
                     This.set_me(res);
                     setCookie("user",JSON.stringify(res),1);
+                    if(!This.socket){
+
+                    }
                     This.set_socket(io.connect(This.host));
+                    document.removeEventListener("keydown",This.keydownHandler,false);
                     This.socket.emit("login", This.me);
                     This.$router.push("/friends");
                 }
@@ -117,5 +109,5 @@ export default {
 </script>
 
 <style lang="less">
-
+  .demo-ruleForm{margin-top: 60px;}
 </style>

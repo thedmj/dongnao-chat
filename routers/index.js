@@ -392,7 +392,7 @@ messagerouter.get("/", function (req, res) {
     var friend = req.query.friend;
     if (user && friend) {
         var key = user + "_" + friend;
-        redis.lrange(key, 0, -1, function (err, data) {
+        redis.lrange(key, -50, -1, function (err, data) {
             res.send(data);
         })
     }

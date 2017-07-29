@@ -42,9 +42,11 @@ export default new vuex.Store({
                 state.me = null;
             }
         },
-        set_chat_friend(state, friend) {
-            state.chat_friend.name = friend.name;
-            state.chat_friend.id = friend.id;
+        set_chat_friend(state, data) {
+            state.chat_friend.name = data.friend.nickname;
+            state.chat_friend.id = data.friend.id;
+            state.chat_friend.logo = data.friend.logo;
+            // state.chat_friend.me = state.me;
         },
         addUnread(state, data) {
             state.friends = state
@@ -81,6 +83,7 @@ export default new vuex.Store({
         }
     },
     actions: {
+        
         search_friend({state}, {name, id}) {
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -153,11 +156,15 @@ export default new vuex.Store({
                         friend: data.friendid
                     },
                     success: function (result) {
-                        for (var i = 0; i < result.length; i++) {
-                            result[i] = JSON.parse(result[i]);
-                        }
+                        
+                        // for (var i = 0; i < result.length; i++) {
+                        //     result[i] = JSON.parse(result[i]);
+                        // }
+                        
+                        result = JSON.parse("["+result.toString()+"]")
                         state.message = result;
                         resolve({data:result,friendID:data.friendid});
+                        
                     }
                 });
             })

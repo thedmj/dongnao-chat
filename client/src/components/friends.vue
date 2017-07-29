@@ -1,7 +1,7 @@
 <template>
   <div class="friends">
     <ul>
-      <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id,friend)">
+      <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id,friend.logo)">
         <el-badge :value="friend.unread" class="item">
           <img :src="host+'upload/'+friend.logo" alt="" width="90" height="90">
         </el-badge>
@@ -35,11 +35,16 @@
     methods: {
       ...mapActions(["getFriends","get_message"]),
       ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_unread"]),
-      chat(username, id, friend) {
-        this.$router.push("/chat" + "?username=" + username + "&id=" + id);
+      chat(nickname, id, logo) {
+        console.log("friend: ",nickname,id,logo)
+        this.$router.push("/chat" + "?nickname=" + nickname + "&id=" + id+"&logo="+logo);
+        // console.log("/chat" + "?nickname=" + nickname + "&id=" + id+"&logo="+logo)
         this.set_chat_friend({
-          name: username,
-          id
+          friend:{
+            nickname,
+            id,
+            logo
+          }
         });
         // this.clearUnread(id)  //清空unread
       }
@@ -66,7 +71,7 @@
               friendid: friends[i].id
             }).then((message)=>{
               var num =0;
-              console.log(message)
+              // console.log(message)
               for(let j=0;j<message.data.length;j++){
                 if(message.data[j].readed == false){
                   num++;
@@ -100,7 +105,7 @@
 
 <style lang="less">
 
-.friends{
+.friends{padding:0 30px 0 30px;overflow: auto;
   ul{text-align: left;
     li{border-bottom: 1px solid #ccc;}
   }

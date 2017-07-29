@@ -38,6 +38,7 @@
   import {
     getCookie
   } from "../public/js/cookies.api";
+  import io from "../../../node_modules/socket.io-client/dist/socket.io";
   import {
     mapState,
     mapGetters,
@@ -46,7 +47,7 @@
   } from "vuex";
   export default {
     computed: {
-      ...mapState(["posts","me","host"])
+      ...mapState(["posts","me","host","socket"])
     },
     methods: {
       ...mapActions(["getPosts", "getFriends"]),
@@ -62,9 +63,13 @@
         this.set_me(cookie_user);
         if (this.me) {
           this.getPosts(this.me.id);
+          if(!this.socket){
+            
+          }
+          this.set_socket(io.connect(this.host));
+          this.socket.emit("login", this.me);
         }
       }
-      
       
 
     }
@@ -73,7 +78,7 @@
 </script>
 
 <style lang="less">
-  .posts{
+  .posts{padding:10px 30px 0 30px;overflow: auto;
     ul{
       li.post{margin-bottom: 16px;border-bottom: 1px solid #ccc;padding-bottom:6px;
         .post-item{display: flex;}
