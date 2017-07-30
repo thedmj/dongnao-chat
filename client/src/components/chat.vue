@@ -1,11 +1,11 @@
 <template>
-  <div class="chat">
-    <div class="chat-room" v-if="chat_friend.name" ref="chatRoom">
+  <div class="chat" ref="chat">
+    <div class="chat-room"  ref="chatRoom">
       <!-- {{me.name}}和 {{chat_friend.name}} id:{{chat_friend.id}}聊天 -->
-      <ul class="message-list">
+      <ul class="message-list" v-if="chat_friend.name">
         <li v-for="(item,$index) in message" :key="$index" :class="{send:item.type =='send',receive:item.type=='receive'}">
-          <avatar :src="host+'upload/'+chat_friend.logo" :username="chat_friend.name" :size=70 width="" v-if="item.type=='receive'" class="avatar"></avatar>
-          <avatar :src="host+'upload/'+me.logo" :username="me.nickname" :size=70 width="" v-if="item.type=='send'" class="avatar"></avatar>
+          <avatar :src="host+'upload/'+chat_friend.logo" :username="chat_friend.name" :size="70"  v-if="item.type=='receive'" class="avatar"></avatar>
+          <avatar :src="host+'upload/'+me.logo" :username="me.nickname" :size="70"  v-if="item.type=='send'" class="avatar"></avatar>
           <div class="text">
             {{item.text}}
           </div>
@@ -127,7 +127,7 @@ export default {
       }).then(() => {
         this.$nextTick(()=>{
           this.$refs.chatRoom.scrollTop = this.$refs.chatRoom.scrollHeight;
-          this.chatRoom = this.$refs.chatRoom;
+          // this.chatRoom = this.$refs.chatRoom;
         });
       });
     } else {
@@ -173,7 +173,7 @@ export default {
         display: flex;
         min-height: 70px;
         margin-bottom: 10px;
-        .avatar {}
+        .avatar {background-size: contain !important;}
         .text {
           align-self: center;
           font-size: 16px;
