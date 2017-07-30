@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import $ from "jquery";
 import {
   getCookie
 } from "../public/js/cookies.api";
@@ -36,7 +37,8 @@ import {
 export default {
   data() {
     return {
-      text: ""
+      text: "",
+      chatRoom:null,
     }
   },
   methods: {
@@ -88,14 +90,16 @@ export default {
         this.socket.emit("login", this.me);
       }
       if (!this.init.chat_init) {
-        console.log("chat init")
         this.init.setInit("chat_init");
         this.socket.on("update", () => {
         this.get_message({
           userid: this.me.id,
           friendid: this.chat_friend.id
         }).then(() => {
-          
+          this.$nextTick(()=>{
+            var chatRoom = $(".chat .chat-room").eq(0)[0];
+            chatRoom.scrollTop = chatRoom.scrollHeight;
+          });
         });
         if(this.$route.path=="/chat"){
           this.socket.emit("clearunread", {
@@ -123,6 +127,7 @@ export default {
       }).then(() => {
         this.$nextTick(()=>{
           this.$refs.chatRoom.scrollTop = this.$refs.chatRoom.scrollHeight;
+          this.chatRoom = this.$refs.chatRoom;
         });
       });
     } else {
