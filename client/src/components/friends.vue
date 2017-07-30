@@ -32,11 +32,12 @@
 
       }
     },
+    props:["init"],
     methods: {
       ...mapActions(["getFriends","get_message"]),
       ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_unread"]),
       chat(nickname, id, logo) {
-        console.log("friend: ",nickname,id,logo)
+        // console.log("friend: ",nickname,id,logo)
         this.$router.push("/chat" + "?nickname=" + nickname + "&id=" + id+"&logo="+logo);
         // console.log("/chat" + "?nickname=" + nickname + "&id=" + id+"&logo="+logo)
         this.set_chat_friend({
@@ -54,8 +55,9 @@
       ...mapState(["friends", "me", "socket", "host"])
     },
     mounted() {
+      
+      console.log("friend")
       var cookie_user = JSON.parse(getCookie("user"));
-
 
       if (!cookie_user) {
         this.$router.push("/login");
@@ -64,7 +66,6 @@
         this.set_me(cookie_user);
       if (this.me) {
         this.getFriends(this.me.id).then((friends)=>{
-          console.log(friends);
           for(let i=0;i<friends.length;i++){
             this.get_message({
               userid: this.me.id,
@@ -78,20 +79,28 @@
                 }
               }
               // console.log(message.friendID,num);
+              console.log(num)
               this.set_unread({id:message.friendID,num}) //设置未读消息数量
             })
           }
         });
-        this.set_socket(io.connect(this.host));
-        this.socket.emit("login", this.me);
-        this.socket.on("addUnread", (data) => {
-          this.addUnread(data);
-        });
-        this.socket.on("get_request", (data) => { //在线时收到好友请求
-          console.log(data);
-          // this.fetch_request_list(this.me.id);
-          alert("你收到一个好友请求")
-        });
+        if(!this.socket){
+          this.set_socket(io.connect(this.host));
+          this.socket.emit("login", this.me);
+        }
+        if(!this.init.friends_init){
+          console.log("friends init")
+          this.init.setInit("friends_init");
+          this.socket.on("addUnread", (data) => {
+            this.addUnread(data);
+          });
+          this.socket.on("get_request", (data) => { //在线时收到好友请求
+            // console.log(data);
+            // this.fetch_request_list(this.me.id);
+            alert("你收到一个好友请求")
+          });
+        }
+        
       }
       }
       

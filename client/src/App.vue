@@ -2,7 +2,7 @@
   <div id="app">
     <div class="title">{{$route.name}}</div>
     <div class="content">
-      <router-view ref="rv"></router-view>
+      <router-view ref="rv" :init="init"></router-view>
     </div>
     <div class="menu" v-if="me">
       <el-menu theme="dark" :default-active="'1'" class="el-menu-demo" mode="horizontal" @select="handleSelect">
@@ -18,6 +18,7 @@
   import{Menu,MenuItem,} from "element-ui";
   import {
     getCookie,
+    setCookie,
     removeCookie
   } from "./public/js/cookies.api";
   import {
@@ -28,10 +29,23 @@
   } from "vuex";
   export default {
     name: 'app',
+    data(){
+      return {
+        init:{
+          chat_init:false,
+          friends_init:false,
+          login_init:false,
+          posts_init:false,
+          self_init:false,
+          setInit:this.setInit
+        }
+      }
+    },
     computed: {
       ...mapState(["me", "socket"])
     },
     mounted() {
+      console.log("app")
       var cookie_user = JSON.parse(getCookie("user"));
       if(cookie_user){
         this.set_me(cookie_user);
@@ -39,6 +53,18 @@
       if (cookie_user.status != 0) {
         this.$router.push("/login");
       } else {
+        if(this.socket){
+          this.socket.on("logout",()=>{
+              alert("别处登陆");
+              removeCookie("user");
+              this.$router.push("/login");
+              // this.socket.emit("logout",this.me.id);
+              this.set_me(null);
+              this.socket.close();
+              this.set_socket(null);
+              this.init.setInit();
+          })
+        }
         // this.$router.push("/self");
         // if(this.$refs.rv){
         //   this.$refs.rv.getFriends(this.me.id);
@@ -53,7 +79,19 @@
       }
     },
     methods: {
-      ...mapMutations(["set_me"]),
+      ...mapMutations(["set_me","set_socket"]),
+      setInit(name){
+        if(name){
+          this.init[name] = true;
+        }else{
+          this.init.chat_init = false;
+          this.init.friends_init = false;
+          this.init.login_init = false;
+          this.init.posts_init = false;
+          this.init.self_init = false;
+        }
+        
+      },
       logout() {
         removeCookie("user");
         this.$router.push("/login");

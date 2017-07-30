@@ -174,32 +174,38 @@
         showSlideBox: false
       }
     },
+    props:["init"],
     mounted() {
+      
       var cookie_user = JSON.parse(getCookie("user"));
 
       if (!cookie_user) {
         this.$router.push("/login");
         this.set_me(null);
       } else {
-        // this.socket = io.connect("http://localhost:3000/");
-        // this.socket.emit("login", this.me);
         this.set_me(cookie_user);
         var id = this.me.id;
         this.action = this.host + "user/" + id + "/upload";
         this.getFriends(this.me.id);
-        this.set_socket(io.connect(this.host));
-        this.socket.emit("login", this.me);
-        this.socket.on("get_request", (data) => { //在线时收到好友请求
-          this.fetch_request_list(this.me.id);
-          alert("你收到一个好友请求")
-        });
-        this.socket.on("request_result", (res) => { //对方验证请求后 看到结果
-          this.fetch_request_list(this.me.id);
-        });
-        this.socket.on("wearefriend", () => {
-          alert("收到啦");
-          this.num_send_request++;
-        });
+        if(!this.socket){
+          this.set_socket(io.connect(this.host));
+          this.socket.emit("login", this.me);
+        }
+        if(!this.init.self_init){
+          this.init.setInit("self_init");
+          this.socket.on("get_request", (data) => { //在线时收到好友请求
+            this.fetch_request_list(this.me.id);
+            alert("你收到一个好友请求")
+          });
+          this.socket.on("request_result", (res) => { //对方验证请求后 看到结果
+            this.fetch_request_list(this.me.id);
+          });
+          this.socket.on("wearefriend", () => {
+            alert("收到啦");
+            this.num_send_request++;
+          });
+        }
+        
         this.fetch_request_list(this.me.id).then((data) => { //获取请求列表
           // console.log(data)
         });
@@ -323,8 +329,11 @@
         this.$router.push("/login");
         this.socket.emit("logout",this.me.id);
         this.set_me(null);
-        
         this.socket.close();
+        console.log(this.init)
+        this.set_socket(null);
+        
+        this.init.setInit();
       },
     },
     computed: {

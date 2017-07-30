@@ -53,12 +53,14 @@ export default new vuex.Store({
                 .friends
                 .map((item) => {
                     if (item.id == data.id) {
+                        console.log(item.unread)
                         item.unread++;
                     }
                     return item;
                 });
         },
         clearUnread(state, id) {
+            console.log("clear");
             state
                 .friends
                 .map((item) => {

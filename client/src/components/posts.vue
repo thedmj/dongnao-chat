@@ -49,11 +49,13 @@
     computed: {
       ...mapState(["posts","me","host","socket"])
     },
+    props:["init"],
     methods: {
       ...mapActions(["getPosts", "getFriends"]),
       ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket"]),
     },
     mounted() {
+      this.init.setInit("posts_init");
       var cookie_user = JSON.parse(getCookie("user"));
       
       if (!cookie_user) {
@@ -66,8 +68,11 @@
           if(!this.socket){
             
           }
-          this.set_socket(io.connect(this.host));
-          this.socket.emit("login", this.me);
+          if(!this.socket){
+            this.set_socket(io.connect(this.host));
+            this.socket.emit("login", this.me);
+          }
+          
         }
       }
       

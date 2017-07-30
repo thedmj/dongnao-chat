@@ -11,11 +11,12 @@ io.on("connection", function (socket) {
     socket.on("login", (user) => { //连接时保存下用户的socket连接
         if(client[user.id]){
             client[user.id].emit("logout");
+            console.log("别处登陆");
         }
         client[user.id] = socket;
     });
     socket.on("logout",(id)=>{
-        client[id] = null;
+        // client[id] = null;
     });
     socket.on("clearunread",(o)=>{
         var key = o.userid + "_" +o.friendid ;

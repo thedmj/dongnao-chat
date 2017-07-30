@@ -19,7 +19,11 @@
 
 <script>
 import io from "../../../node_modules/socket.io-client/dist/socket.io";
-import{setCookie,getCookie} from "../public/js/cookies.api";
+import {
+    getCookie,
+    setCookie,
+    removeCookie
+  } from "../public/js/cookies.api";
 import $ from "jquery";
 import {form,formItem,input,button} from "element-ui";
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
@@ -52,7 +56,9 @@ export default {
         // }
       };
   },
+  props:["init"],
   mounted () {
+    this.init.setInit("login_init");
     var cookie_user =JSON.parse(getCookie("user"));
     if(cookie_user){
         this.$router.push("/friends");
@@ -88,11 +94,20 @@ export default {
                     This.set_me(res);
                     setCookie("user",JSON.stringify(res),1);
                     if(!This.socket){
-
+                        This.set_socket(io.connect(This.host));
+                        This.socket.emit("login", This.me);
+                        This.socket.on("logout",()=>{
+                            alert("别处登陆");
+                            removeCookie("user");
+                            This.$router.push("/login");
+                            // This.socket.emit("logout",This.me.id);
+                            This.set_me(null);
+                            This.socket.close();
+                            This.set_socket(null);
+                            This.init.setInit();
+                        })
                     }
-                    This.set_socket(io.connect(This.host));
                     document.removeEventListener("keydown",This.keydownHandler,false);
-                    This.socket.emit("login", This.me);
                     This.$router.push("/friends");
                 }
             }
