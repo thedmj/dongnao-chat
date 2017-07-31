@@ -87,7 +87,7 @@
     ul{
       li.post{margin-bottom: 16px;border-bottom: 1px solid #ccc;padding-bottom:6px;
         .post-item{display: flex;}
-        .img{margin-right:10px; width:10%;
+        .img{margin-right:10px; width:20%;
           img{width:100%;}
         }
         .post-content{text-align: left;width:90%;;

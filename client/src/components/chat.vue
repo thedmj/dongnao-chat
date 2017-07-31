@@ -66,6 +66,25 @@ export default {
         type: 'send'
       });
       this.text = "";
+    },
+    updateHandle(){
+      console.log(this.$refs)
+        this.get_message({
+          userid: this.me.id,
+          friendid: this.chat_friend.id
+        }).then(() => {
+          this.$nextTick(()=>{
+            // var chatRoom = $(".chat .chat-room").eq(0)[0];
+            // chatRoom.scrollTop = chatRoom.scrollHeight;
+            this.$refs.chatRoom.scrollTop = this.$refs.chatRoom.scrollHeight;
+          });
+        });
+        if(this.$route.path=="/chat"){
+          this.socket.emit("clearunread", {
+            userid: this.me.id,
+            friendid: this.chat_friend.id
+          });
+        }
     }
   },
   computed: {
@@ -91,26 +110,10 @@ export default {
       }
       if (!this.init.chat_init) {
         this.init.setInit("chat_init");
-        this.socket.on("update", () => {
-        this.get_message({
-          userid: this.me.id,
-          friendid: this.chat_friend.id
-        }).then(() => {
-          this.$nextTick(()=>{
-            var chatRoom = $(".chat .chat-room").eq(0)[0];
-            chatRoom.scrollTop = chatRoom.scrollHeight;
-          });
-        });
-        if(this.$route.path=="/chat"){
-          this.socket.emit("clearunread", {
-            userid: this.me.id,
-            friendid: this.chat_friend.id
-          });
-        }
         
-      });
       }
-      
+      this.socket.off("update");
+      this.socket.on("update", this.updateHandle);
       if (!friend_logo) {
         friend_logo = "";
       }
@@ -127,7 +130,6 @@ export default {
       }).then(() => {
         this.$nextTick(()=>{
           this.$refs.chatRoom.scrollTop = this.$refs.chatRoom.scrollHeight;
-          // this.chatRoom = this.$refs.chatRoom;
         });
       });
     } else {

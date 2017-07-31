@@ -28,7 +28,8 @@ export default new Router({
     {
       path: '/chat',
       name: '聊天',
-      component: chat
+      component: chat,
+      
     },
     {
       path: '/self',

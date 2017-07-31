@@ -9,6 +9,7 @@
             </el-form-item>
             
             <el-button type="primary" @click="submit">登录</el-button>
+            <el-button type="primary" @click="submit">注册(还没写)</el-button>
             <!-- <el-button @click="resetForm('ruleForm2')">重置</el-button> -->
         </el-form>
         <!-- <input type="text" v-model="username" ref="username">
@@ -124,5 +125,8 @@ export default {
 </script>
 
 <style lang="less">
-  .demo-ruleForm{margin-top: 60px;}
+    .login{padding:20px;
+        .demo-ruleForm{margin-top: 60px;}
+    }
+  
 </style>

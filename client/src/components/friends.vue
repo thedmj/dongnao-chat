@@ -34,7 +34,7 @@
     },
     props:["init"],
     methods: {
-      ...mapActions(["getFriends","get_message"]),
+      ...mapActions(["getFriends","get_message","clear_message"]),
       ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_unread"]),
       chat(nickname, id, logo) {
         // console.log("friend: ",nickname,id,logo)
@@ -81,6 +81,7 @@
               // console.log(message.friendID,num);
               console.log(num)
               this.set_unread({id:message.friendID,num}) //设置未读消息数量
+              this.clear_message();
             })
           }
         });

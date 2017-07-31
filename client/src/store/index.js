@@ -170,8 +170,10 @@ export default new vuex.Store({
                     }
                 });
             })
-            
         },
+        clear_message({state},data){
+            state.message =[];
+        }
         
     }
 });

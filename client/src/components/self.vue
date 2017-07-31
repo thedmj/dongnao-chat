@@ -391,6 +391,8 @@
     overflow: auto;
     margin: auto;
     text-align: left;
+    padding:0 10px 0 10px;
+    box-sizing: border-box;
     .header {
       display: flex;
       justify-content: space-between;
@@ -403,12 +405,14 @@
       flex-shrink: 0;
       height: 160px;
       vertical-align: bottom;
+      .el-upload.el-upload--text{width:100%;height:100%;}
       img {
         width: 100%;
         height: 100%;
       }
     }
     .user-info {
+      margin-left: 6px;
       align-self: center;
       width: 190px;
       .nickname {
