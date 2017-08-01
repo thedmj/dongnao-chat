@@ -57,6 +57,7 @@
     mounted() {
       
       console.log("friend")
+      
       var cookie_user = JSON.parse(getCookie("user"));
 
       if (!cookie_user) {
@@ -89,6 +90,7 @@
           this.set_socket(io.connect(this.host));
           this.socket.emit("login", this.me);
         }
+        this.socket.off("update");
         if(!this.init.friends_init){
           console.log("friends init")
           this.init.setInit("friends_init");

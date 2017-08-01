@@ -53,7 +53,8 @@ function mergResult(results){
                 comment:[{content:result.commentcontent,auth_id:result.comments_u_id,comment_user_nickname:result.comment_user_nickname,comments_id:result.comments_id}],
                 stars:result.stars_u_id?[{stars_u_id:result.stars_u_id,stars_nickname:result.stars_nickname}]:[],
                 friendname:result.friendname,
-                logo:result.logo
+                logo:result.logo,
+                authID:result.userId
             };
             r.push(o);
         }else{
@@ -76,7 +77,7 @@ function mergResult(results){
 //获取所有好友说说
 userrouter.get("/:id/posts_detail",(req,res)=>{
     var id = req.params.id;
-    CONNECT.query("SELECT users.logo as logo,posts.id AS postid,posts.title AS posttitle,posts.content AS postcontent,posts.createdAt AS postcreated,s_u.id AS stars_u_id,c_u.id as comments_id,comment_user_nickname,c_u.userId as comments_u_id,c_u.content AS commentcontent,users.nickname AS friendname,stars_nickname FROM posts \
+    CONNECT.query("SELECT posts.userId,users.logo as logo,posts.id AS postid,posts.title AS posttitle,posts.content AS postcontent,posts.createdAt AS postcreated,s_u.id AS stars_u_id,c_u.id as comments_id,comment_user_nickname,c_u.userId as comments_u_id,c_u.content AS commentcontent,users.nickname AS friendname,stars_nickname FROM posts \
                     LEFT JOIN (SELECT comments.id,comments.content,comments.createdAt as comments_ca,comments.createdAt,comments.postId,comments.userId,users.nickname AS comment_user_nickname FROM comments LEFT JOIN users ON comments.userId = users.id) AS c_u ON posts.id = c_u.postId \
                     LEFT JOIN users ON posts.userId = users.id \
                     LEFT JOIN (SELECT stars.userId,users.nickname as stars_nickname,stars.postId,users.id FROM stars LEFT JOIN users ON stars.userId = users.id) AS s_u ON posts.id=s_u.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = "+id+") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = "+id+") OR posts.userId="+id+";"
