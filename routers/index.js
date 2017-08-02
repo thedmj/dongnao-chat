@@ -368,7 +368,7 @@ postrouter.get("/:id",(req,res)=>{
     
 });
 
-// /comment路由
+// 获取comment路由
 commentrouter.get("/", function (req, res) {
     var offset = req.query.offset;
     var limit = req.query.limit;
@@ -401,6 +401,8 @@ messagerouter.get("/", function (req, res) {
 
 
 
+
+
 // router.get("/",(req,res)=>{
 //     res.render("login.html");
 // });
@@ -421,6 +423,60 @@ router.post("/login",(req,res)=>{
             res.send({status:1,desc:"用户名或密码错误"});
         }
     })
+});
+//提交评论
+router.post("/sendComment",(req,res)=>{
+    var userid = req.body.userid;
+    var postid = req.body.postid;
+    var text = req.body.text;
+    CONNECT.query("INSERT INTO comments (createdAt, updatedAt,userId,postId,content) VALUES (NOW(),NOW(),"+userid+","+postid+",'"+text+"');").then((result)=>{
+        console.log(result[0]);
+        res.send(result[0]);
+    })
+});
+//点赞
+router.post("/sendStar",(req,res)=>{
+    var userid = req.body.userid;
+    var postid = req.body.postid;
+    CONNECT.query("SELECT * FROM stars WHERE userId = "+userid+" AND postId = "+postid).then((result)=>{
+        if(result[0].length ==0){
+            CONNECT.query("INSERT INTO stars (createdAt, updatedAt,userId,postId) VALUES (NOW(),NOW(),"+userid+","+postid+")").then((r)=>{
+                if(r[0].affectedRows == 1){
+                    res.send({status:0,message:"点赞成功"});
+                }else{
+                    res.send({status:2,message:"数据库存入错误"});
+                }
+            });
+        }else{
+            res.send({status:1,message:"已经赞过了"});
+        }
+    })
+});
+//删除点赞
+router.post("/deleteStar",(req,res)=>{
+    var userid = req.body.userid;
+    var postid = req.body.postid;
+    CONNECT.query("DELETE FROM stars WHERE stars.userId = "+userid+" AND stars.postId = "+postid+";").then((r)=>{
+        if(r[0].affectedRows == 1){
+            res.send({status:0,message:"取消点赞"});
+        }else{
+            res.send({status:1,message:"数据库错误"});
+        }
+        
+    });
+});
+
+//检查点赞
+router.post("/checkStar",(req,res)=>{
+    var userid = req.body.userid;
+    var postid = req.body.postid;
+    CONNECT.query("SELECT * FROM stars WHERE userId = "+userid+" AND postId = "+postid).then((result)=>{
+        if(result[0].length == 0){
+            res.send({allowStar:true});
+        }else{
+            res.send({allowStar:false});
+        }
+    });
 });
 
 module.exports = router;

@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from "./store";
+import $ from "jquery";
 
 Vue.config.productionTip = false
 
@@ -14,4 +15,7 @@ new Vue({
   store,
   template: '<App/>',
   components: { App }
-})
+});
+$(".preload").remove();
+clearInterval(window.timer1)
+window.cancelAnimationFrame(timer2);

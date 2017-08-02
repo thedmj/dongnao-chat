@@ -31,7 +31,7 @@
     <!-- <el-dialog title="搜索好友" :visible.sync="search_friend_visible" size="tiny" :class="'search_dialog'" :before-close="handleClose">
       
     </el-dialog> -->
-    <transition name="slide">
+    <transition name="fade">
       <div class="slide-box" v-show="showSlideBox">
         <form action="">
           <el-input placeholder="请输入昵称，不输入则查找全部" icon="search" v-model="search_name" :on-icon-click="search">
@@ -533,10 +533,10 @@
     }
   }
   
-.slide-enter-active, .slide-leave-active {
+.fade-enter-active, .fade-leave-active {
   transition: opacity .5s
 }
-.slide-enter, .slide-leave-to {
+.fade-enter, .fade-leave-to {
   opacity: 0
 }
 </style>
