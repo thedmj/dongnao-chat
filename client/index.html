@@ -221,9 +221,14 @@
     
 
 
+    <!-- <script src="http://localhost:3000/js/kute.min.js"></script>
+    <script src="http://localhost:3000/js/kute-attr.min.js"></script>
+    <script src="http://localhost:3000/js/kute-svg.min.js"></script> -->
+
     <script src="http://115.159.72.218:3000/js/kute.min.js"></script>
     <script src="http://115.159.72.218:3000/js/kute-attr.min.js"></script>
     <script src="http://115.159.72.218:3000/js/kute-svg.min.js"></script>
+
     <script>
         var t1 = KUTE.fromTo('#path1', {
             attr: {
@@ -326,7 +331,7 @@
         l2.chain(l3);
         l3.chain(l1);
         l1.start();
-        setInterval(function () {
+        window.timer1=setInterval(function () {
             var text = document.getElementsByClassName("text")[0];
             text.className = "text shake";
             setTimeout(function () {
@@ -387,7 +392,7 @@
         }
 
         function update() {
-            window.requestAnimationFrame(update);
+            window.timer2=window.requestAnimationFrame(update);
             ctx.clearRect(0,0,canvas.width,canvas.height);
             for(var i=0;i<num;i++){
                 var s = stars[i];
