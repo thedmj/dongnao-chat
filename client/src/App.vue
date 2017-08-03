@@ -70,28 +70,8 @@
         //   this.$refs.rv.getFriends(this.me.id);
         // }
       }
-      var startY=0;
-      var overscroll = function(el) {
-        el.addEventListener('touchstart', function(e) {
-          startY = e.changedTouches[0].clientY;
-        });
-        el.addEventListener('touchmove', function(e) {
-          var nowY = e.changedTouches[0].clientY;
-          if(el.scrollTop==0 && nowY-startY >=0){
-            e._isScroller = false;
-          }else{
-            e._isScroller = true;
-          }
-          console.log(e._isScroller)
-        });
-      }
-      overscroll(document.querySelector('.content'));
-      document.body.addEventListener('touchmove', function(e) {
-        //In this case, the default behavior is scrolling the body, which
-        //would result in an overflow.  Since we don't want that, we preventDefault.
-        if(!e._isScroller) {
-          e.preventDefault();
-        }
+      $(document).on("touchmove",(e)=>{
+        e.preventDefault();
       });
     },
     watch: {
