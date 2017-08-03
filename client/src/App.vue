@@ -70,36 +70,27 @@
         //   this.$refs.rv.getFriends(this.me.id);
         // }
       }
-      
+      var startY=0;
       var overscroll = function(el) {
-        el.addEventListener('touchstart', function() {
-          var top = el.scrollTop
-            , totalScroll = el.scrollHeight
-            , currentScroll = top + el.offsetHeight;
-          //If we're at the top or the bottom of the containers
-          //scroll, push up or down one pixel.
-          //
-          //this prevents the scroll from "passing through" to
-          //the body.
-          if(top === 0) {
-            el.scrollTop = 1;
-          } else if(currentScroll === totalScroll) {
-            el.scrollTop = top - 1;
-          }
+        el.addEventListener('touchstart', function(e) {
+          startY = e.changedTouches[0].clientY;
         });
-        el.addEventListener('touchmove', function(evt) {
-          //if the content is actually scrollable, i.e. the content is long enough
-          //that scrolling can occur
-          if(el.offsetHeight < el.scrollHeight)
-            evt._isScroller = true;
+        el.addEventListener('touchmove', function(e) {
+          var nowY = e.changedTouches[0].clientY;
+          if(el.scrollTop==0 && nowY-startY >=0){
+            e._isScroller = false;
+          }else{
+            e._isScroller = true;
+          }
+          console.log(e._isScroller)
         });
       }
       overscroll(document.querySelector('.content'));
-      document.body.addEventListener('touchmove', function(evt) {
+      document.body.addEventListener('touchmove', function(e) {
         //In this case, the default behavior is scrolling the body, which
         //would result in an overflow.  Since we don't want that, we preventDefault.
-        if(!evt._isScroller) {
-          evt.preventDefault();
+        if(!e._isScroller) {
+          e.preventDefault();
         }
       });
     },
