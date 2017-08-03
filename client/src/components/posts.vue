@@ -27,9 +27,10 @@
               </transition>
               <ul @click="showCommentMessage=false">
                 <li v-for="item in post.comment" :key="item.id">
-                  <p v-if="item.content != null">
-                    {{item.comment_user_nickname}}:{{item.content}}
+                  <p v-if="item.content != null" @click="reply">
+                    <span class="nickname">{{item.comment_user_nickname}}</span>:{{item.content}}
                   </p>
+                  <p v-if="item.r_content"><span class="nickname">{{me.nickname}}</span>回复<span class="nickname">{{item.comment_user_nickname}}</span>:{{item.r_content}}</p>
                 </li>
               </ul>
             </div>
@@ -174,7 +175,10 @@
             }
           }
         });
-      }
+      },
+      reply(){
+        
+      },
     },
     mounted() {
       this.init.setInit("posts_init");

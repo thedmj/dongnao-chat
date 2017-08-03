@@ -17,6 +17,5 @@ new Vue({
   components: { App }
 });
 $(".preload").remove();
-console.log(window.timer1)
 clearInterval(window.timer1)
 window.cancelAnimationFrame(window.timer2);

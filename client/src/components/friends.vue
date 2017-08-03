@@ -56,7 +56,7 @@
     },
     mounted() {
       
-      console.log("friend")
+      // console.log("friend")
       
       var cookie_user = JSON.parse(getCookie("user"));
 
@@ -80,7 +80,7 @@
                 }
               }
               // console.log(message.friendID,num);
-              console.log(num)
+              // console.log(num)
               this.set_unread({id:message.friendID,num}) //设置未读消息数量
               this.clear_message();
             })
@@ -92,7 +92,7 @@
         }
         this.socket.off("update");
         if(!this.init.friends_init){
-          console.log("friends init")
+          // console.log("friends init")
           this.init.setInit("friends_init");
           this.socket.on("addUnread", (data) => {
             this.addUnread(data);
