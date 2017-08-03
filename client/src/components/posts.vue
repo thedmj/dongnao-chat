@@ -26,11 +26,11 @@
                 </div>
               </transition>
               <ul @click="showCommentMessage=false">
-                <li v-for="item in post.comment" :key="item.id">
-                  <p v-if="item.content != null" @click="reply">
-                    <span class="nickname">{{item.comment_user_nickname}}</span>:{{item.content}}
-                  </p>
-                  <p v-if="item.r_content"><span class="nickname">{{me.nickname}}</span>回复<span class="nickname">{{item.comment_user_nickname}}</span>:{{item.r_content}}</p>
+                <li v-for="item in post.comment" :key="item.comments_id">
+                  <div v-if="item.content != null" @click="reply" :data-commentid="item.comments_id">
+                    <span class="nickname">{{item.comment_user_nickname}}</span>:{{item.content}}{{item.comments_id}}
+                  </div>
+                  <p v-if="item.r_content"><span class="nickname">{{post.friendname}}</span>回复<span class="nickname">{{item.comment_user_nickname}}</span>:{{item.r_content}}</p>
                 </li>
               </ul>
             </div>
@@ -176,8 +176,8 @@
           }
         });
       },
-      reply(){
-        
+      reply(e){
+        console.log(e.target);
       },
     },
     mounted() {
