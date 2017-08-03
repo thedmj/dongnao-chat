@@ -70,9 +70,6 @@
         //   this.$refs.rv.getFriends(this.me.id);
         // }
       }
-      $(document).on("touchmove",(e)=>{
-        e.preventDefault();
-      });
     },
     watch: {
       $route() {
