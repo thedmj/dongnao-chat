@@ -7,14 +7,34 @@
             <el-form-item label="密码" prop="pass">
                 <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
             </el-form-item>
-            
             <el-button type="primary" @click="submit">登录</el-button>
-            <el-button type="primary" @click="submit">注册(还没写)</el-button>
-            <!-- <el-button @click="resetForm('ruleForm2')">重置</el-button> -->
+            <el-button type="primary" @click="showRegister=true">注册</el-button>
         </el-form>
-        <!-- <input type="text" v-model="username" ref="username">
-        <input type="text" v-model="password" ref="password">
-        <button @click="submit">登录</button> -->
+        <transition name="fade">
+            <div class="register" v-if="showRegister">
+                <el-form>
+                    <el-form-item label="用户名" prop="username" >
+                        <el-input v-model="r_username"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码" prop="pass" >
+                        <el-input type="password" v-model="r_password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请再次输入密码" prop="pass" >
+                        <el-input type="password" v-model="r_c_password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="昵称" prop="nickname" >
+                        <el-input v-model="r_nickname"></el-input>
+                    </el-form-item>
+                    <div>
+                        <el-button type="primary" @click="registerHandler">注册</el-button>
+                    </div>
+                    <div>
+                        <el-button type="primary" @click="showRegister=false">返回</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </transition>
+        
     </div>
 </template>
 
@@ -41,12 +61,16 @@ export default {
           callback(new Error('请输入密码'));
         } 
       };
-      
       return {
         ruleForm2: {
           pass: '',
           username: ''
         },
+        showRegister:false,
+        r_username:"",
+        r_password:"",
+        r_c_password:"",
+        r_nickname:"",
         // rules2: {
         //   pass: [
         //     { validator: validatePass, trigger: 'blur' }
@@ -78,8 +102,42 @@ export default {
           this.submit();
         }
       },
+      registerHandler(){
+        var This = this;
+        if(!this.r_username.match(/^[0-9a-zA-Z_]{6,12}$/)){
+            alert("用户名不符合规范");
+            return;
+        }
+        if(this.r_password != this.r_c_password){
+            alert("密码不一致");
+            return;
+        }
+        $.ajax({
+            url:this.host+"checkusername",
+            type:"post",
+            data:{
+                username:this.r_username,
+                
+            },
+            success(res){
+                if(res.status == 0){
+                    $.ajax({
+                        url:This.host+"register",
+                        type:"post",
+                        data:{
+                            username:This.r_username,
+                            password:This.r_password,
+                            nickname:This.r_nickname
+                        },
+                        success(res){
+                            console.log(res);
+                        }
+                    });
+                }
+            }
+        });
+      },
       submit(){
-        console.log("submit")
         var This = this;
         var username = this.ruleForm2.username;
         var password = this.ruleForm2.pass;
@@ -106,7 +164,7 @@ export default {
                             This.socket.close();
                             This.set_socket(null);
                             This.init.setInit();
-                        })
+                        });
                     }
                     document.removeEventListener("keydown",This.keydownHandler,false);
                     This.$router.push("/friends");
@@ -125,8 +183,11 @@ export default {
 </script>
 
 <style lang="less">
-    .login{padding:20px;
+    .login{padding:20px;overflow: hidden;position: relative;width:100%;height:100%;box-sizing: border-box;;
         .demo-ruleForm{margin-top: 60px;}
+        .register{position: absolute;left: 0;top:0;width:100%;height:100%;background: #fff;padding:10px;box-sizing: border-box;
+            .el-button{width:100%;}
+        }
     }
   
 </style>
