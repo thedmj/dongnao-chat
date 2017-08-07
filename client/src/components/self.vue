@@ -176,7 +176,7 @@
     },
     props:["init"],
     mounted() {
-      
+      console.log(getCookie("user"))
       var cookie_user = JSON.parse(getCookie("user"));
 
       if (!cookie_user) {

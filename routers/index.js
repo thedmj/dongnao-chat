@@ -21,7 +21,7 @@ var storage = multer.diskStorage({
         cb(null, './public/upload');
     },
     filename: function(req, file, cb) {
-        cb(null, Date.now() + file.originalname);
+        cb(null, decodeURI(Date.now()));
     }
 });
 var upload = multer({ dest: "./public/upload", storage });
@@ -262,10 +262,10 @@ userrouter.post("/:id/post/update", (req, res) => {
 
 //头像上传
 userrouter.post("/:id/upload", upload.single('img'), (req, res) => {
-    console.log(req.file);
     var id = req.params.id;
-    CONNECT.query("UPDATE users SET users.logo = '" + escape(req.file.filename) + "' WHERE id=" + id).then((data) => {
-        data[0].logo = escape(req.file.filename);
+    console.log(req.file.filename, escape(req.file.filename))
+    CONNECT.query("UPDATE users SET users.logo = '" + req.file.filename + "' WHERE id=" + id).then((data) => {
+        data[0].logo = req.file.filename;
         res.send(data[0]);
     });
 });
@@ -510,6 +510,17 @@ router.post("/register", (req, res) => {
     CONNECT.query("INSERT INTO users (username,password,nickname) VALUES ('" + username + "','" + password + "','" + nickname + "');").then((r) => {
         if (r[0].affectedRows == 1) {
             res.send({ status: 0, message: "注册成功" });
+        }
+    });
+});
+//添加post
+router.post("/addPost", (req, res) => {
+    var userid = req.body.userid;
+    var title = req.body.title;
+    var content = req.body.content;
+    CONNECT.query("INSERT INTO posts (createdAt, updatedAt,userId,title,content,deleted) VALUES (NOW(),NOW()," + userid + ",'" + title + "','" + content + "',0);").then((r) => {
+        if (r[0].affectedRows == 1) {
+            res.send({ status: 0, message: "发布成功" });
         }
     });
 });

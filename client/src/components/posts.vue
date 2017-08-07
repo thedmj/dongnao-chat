@@ -38,7 +38,6 @@
         </div>
 
       </div>
-
     </li>
   </ul>
   <!-- 评论输入框start -->
@@ -63,6 +62,18 @@
     </div>
   </transition>
   <!-- 回复输入框end -->
+
+  <!-- post发表页start -->
+    <div class="add-post-page" v-if="showAddPost">
+      <div class="post-box">
+        <el-input class="title-input" v-model="postTitle"></el-input>
+        <el-input class="content-input" v-model="postContent" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"></el-input>
+        <el-button class="comment-submit" @click="closePost">取消</el-button>
+        <el-button class="comment-submit" @click="submitPost">发布</el-button>
+      </div>
+      
+    </div>
+  <!-- post发表也end -->
 </div>
 </template>
 
@@ -85,7 +96,7 @@ import {
 } from "vuex";
 export default {
   computed: {
-    ...mapState(["posts", "me", "host", "socket"]),
+    ...mapState(["posts", "me", "host", "socket","showAddPost"]),
     postList() {
       return this.posts.map((item) => {
         Vue.set(item, "open", false);
@@ -102,12 +113,14 @@ export default {
       activeCommentID: null,
       commentText: "",
       showReplyMessage: false,
-      replyText: ""
+      replyText: "",
+      postTitle:"",
+      postContent:""
     }
   },
   methods: {
     ...mapActions(["getPosts", "getFriends"]),
-    ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket"]),
+    ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_showAddPost"]),
     open(index, postid) {
       var This = this;
       $.ajax({
@@ -227,6 +240,26 @@ export default {
       }
 
     },
+    closePost(){
+      this.set_showAddPost(false);
+    },
+    submitPost(){
+      var This = this;
+      $.ajax({
+        url:this.host+"addPost",
+        data:{
+          userid:this.me.id,
+          title:this.postTitle,
+          content:this.postContent
+        },
+        type:"post",
+        success(res){
+          console.log(res);
+          This.getPosts(This.me.id);
+          This.set_showAddPost(false);
+        }
+      });
+    },
   },
   mounted() {
     this.init.setInit("posts_init");
@@ -261,8 +294,15 @@ export default {
 
 <style lang="less">
 .posts {
+  position: absolute;left: 0;top:0;bottom: 0;
   padding: 10px 10px 0 10px;
   overflow: auto;
+  .add-post-page{width:100%;height:100%;position: fixed;left: 0;top: 0;background: rgba(0,0,0,0.7);
+    .post-box{width:90%;margin: auto;margin-top: 160px;
+      .title-input{margin-bottom: 30px;}
+      .content-input{margin-bottom: 30px;}
+    }
+  }
   ul {
     li.post {
       margin-bottom: 16px;

@@ -1,6 +1,13 @@
 <template>
   <div id="app">
-    <div class="title">{{$route.name}}</div>
+    <div class="title">
+      {{$route.name}}
+      <!-- 发布start -->
+      <div class="add-post" v-if="$route.path == '/posts'" @click="openPost">
+        +
+      </div>
+      <!-- 发布end -->
+    </div>
     <div class="content">
       <router-view ref="rv" :init="init"></router-view>
     </div>
@@ -79,7 +86,7 @@
       }
     },
     methods: {
-      ...mapMutations(["set_me","set_socket"]),
+      ...mapMutations(["set_me","set_socket","set_showAddPost"]),
       setInit(name){
         if(name){
           this.init[name] = true;
@@ -91,6 +98,9 @@
           this.init.self_init = false;
         }
         
+      },
+      openPost(){
+        this.set_showAddPost(true);
       },
       logout() {
         removeCookie("user");
@@ -127,7 +137,9 @@
     height: 100%;
     margin: auto;
     background: #fff;
-    .title{height:60px;line-height: 60px;background: #000;color:#fff;position: absolute;left: 0;top:0;width:100%;font-size: 16px;z-index: 9;}
+    .title{height:60px;line-height: 60px;background: #000;color:#fff;position: absolute;left: 0;top:0;width:100%;font-size: 16px;z-index: 9;
+      .add-post{position: absolute;right: 0;top:0;width:60px;height:60px;background: #000;z-index: 99;color:#fff;font-size: 30px;}
+    }
     .content{position: absolute;top:60px;bottom:60px;overflow: auto;box-sizing: border-box;width:100%;}
     .menu{position: absolute;left: 0;bottom: 0;width: 100%;z-index:9;
       ul{display: flex;

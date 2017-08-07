@@ -56,7 +56,7 @@
     },
     mounted() {
       
-      // console.log("friend")
+      console.log(getCookie("user"));
       
       var cookie_user = JSON.parse(getCookie("user"));
 

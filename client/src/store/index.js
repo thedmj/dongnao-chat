@@ -24,22 +24,26 @@ export default new vuex.Store({
             id: ""
         },
         me: null,
-        request_list:{
-            get:[],
-            send:[]
+        request_list: {
+            get: [],
+            send: []
         },
-        socket:null
+        socket: null,
+        showAddPost: false,
     },
     getters: {},
     mutations: {
+        set_showAddPost(state, type) {
+            state.showAddPost = type;
+        },
         set_me(state, o) {
-            if(o != null){
+            if (o != null) {
                 state.me = {};
                 state.me.username = o.username;
                 state.me.nickname = o.nickname;
                 state.me.id = o.id;
                 state.me.logo = o.logo;
-            }else{
+            } else {
                 state.me = null;
             }
         },
@@ -70,15 +74,15 @@ export default new vuex.Store({
                     }
                 })
         },
-        set_request_list(state,data){
+        set_request_list(state, data) {
             state.request_list = data;
         },
-        set_socket(state,socket){
+        set_socket(state, socket) {
             state.socket = socket;
         },
-        set_unread(state,data){
-            state.friends.map((item)=>{
-                if(item.id == data.id){
+        set_unread(state, data) {
+            state.friends.map((item) => {
+                if (item.id == data.id) {
                     item.unread = data.num;
                 }
                 return item;
@@ -86,8 +90,8 @@ export default new vuex.Store({
         }
     },
     actions: {
-        
-        search_friend({state}, {name, id}) {
+
+        search_friend({ state }, { name, id }) {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: host + "user/" + id + "/search",
@@ -108,25 +112,25 @@ export default new vuex.Store({
                 });
             });
         },
-        fetch_request_list({state,commit},id){
-            return new Promise((resolve,reject)=>{
+        fetch_request_list({ state, commit }, id) {
+            return new Promise((resolve, reject) => {
                 $.ajax({
-                    url:host+"user/"+id+"/request",
-                    type:"get",
-                    success(res){
-                        commit("set_request_list",res);
+                    url: host + "user/" + id + "/request",
+                    type: "get",
+                    success(res) {
+                        commit("set_request_list", res);
                         resolve(res);
                     }
                 });
             });
-            
+
         },
-        getFriends({state}, id) {
-            return new Promise((resolve,reject)=>{
+        getFriends({ state }, id) {
+            return new Promise((resolve, reject) => {
                 $.ajax({
                     url: host + "user/" + id + "/friends",
                     type: "get",
-                    success: function (data) {
+                    success: function(data) {
                         for (var i = 0; i < data.length; i++) {
                             if (!state.friends[i]) {
                                 data[i].unread = 0;
@@ -139,42 +143,42 @@ export default new vuex.Store({
                     }
                 });
             });
-            
+
         },
-        getPosts({state},id) {
+        getPosts({ state }, id) {
             $.ajax({
                 url: host + "user/" + id + "/posts_detail",
-                success: function (data) {
-                    console.log("posts",data);
+                success: function(data) {
+                    console.log("posts", data);
                     state.posts = data;
                 }
             });
         },
-        get_message({state},data) {
-            return new Promise((resolve,reject)=>{
+        get_message({ state }, data) {
+            return new Promise((resolve, reject) => {
                 $.ajax({
                     url: get_message,
                     data: {
                         user: data.userid,
                         friend: data.friendid
                     },
-                    success: function (result) {
-                        
+                    success: function(result) {
+
                         // for (var i = 0; i < result.length; i++) {
                         //     result[i] = JSON.parse(result[i]);
                         // }
-                        
-                        result = JSON.parse("["+result.toString()+"]")
+
+                        result = JSON.parse("[" + result.toString() + "]")
                         state.message = result;
-                        resolve({data:result,friendID:data.friendid});
-                        
+                        resolve({ data: result, friendID: data.friendid });
+
                     }
                 });
             })
         },
-        clear_message({state},data){
-            state.message =[];
+        clear_message({ state }, data) {
+            state.message = [];
         }
-        
+
     }
 });

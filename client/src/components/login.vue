@@ -46,7 +46,7 @@ import {
     removeCookie
   } from "../public/js/cookies.api";
 import $ from "jquery";
-import {form,formItem,input,button} from "element-ui";
+import {form,formItem,input,button,Message} from "element-ui";
 import {mapState,mapGetters,mapActions,mapMutations} from "vuex";
 export default {
   data () {
@@ -102,7 +102,7 @@ export default {
           this.submit();
         }
       },
-      registerHandler(){
+      registerHandler(){                                               //注册
         var This = this;
         if(!this.r_username.match(/^[0-9a-zA-Z_]{6,12}$/)){
             alert("用户名不符合规范");
@@ -131,6 +131,12 @@ export default {
                         },
                         success(res){
                             console.log(res);
+                            This.showRegister = false;
+                            Message({
+                                message: '注册成功！请重新登录',
+                                type: 'success'
+                            });
+
                         }
                     });
                 }
