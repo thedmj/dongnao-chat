@@ -1,10 +1,12 @@
 <template>
 <div class="posts">
-  <ul>
+  <div class="list">
+    <ul>
     <li v-for="(post,$index) in postList" :key="post.postid" class="post">
       <div class="post-item">
         <div class="img">
-          <img :src="host+'upload/'+post.logo" alt="">
+          <img :src="host+'upload/'+post.logo" alt="" v-if="post.logo">
+          <img :src="host+'upload/null.jpg'" alt="" v-if="!post.logo">
         </div>
         <div class="post-content">
           <h3 class="nickname">{{post.friendname}}</h3>
@@ -40,6 +42,8 @@
       </div>
     </li>
   </ul>
+  </div>
+  
   <!-- 评论输入框start -->
   <transition name="fade">
     <div class="comment-message-wrapper" v-if="showCommentMessage">
@@ -66,10 +70,12 @@
   <!-- post发表页start -->
     <div class="add-post-page" v-if="showAddPost">
       <div class="post-box">
+        <p>标题：</p>
         <el-input class="title-input" v-model="postTitle"></el-input>
+        <p>内容：</p>
         <el-input class="content-input" v-model="postContent" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"></el-input>
-        <el-button class="comment-submit" @click="closePost">取消</el-button>
-        <el-button class="comment-submit" @click="submitPost">发布</el-button>
+        <el-button class="comment-submit" @click="closePost" type="warning">取消</el-button>
+        <el-button class="comment-submit" @click="submitPost" type="info">发布</el-button>
       </div>
       
     </div>
@@ -296,9 +302,13 @@ export default {
 .posts {
   position: absolute;left: 0;top:0;bottom: 0;
   padding: 10px 10px 0 10px;
-  overflow: auto;
+  width:100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  .list{width:100%;height:100%;overflow: auto;}
   .add-post-page{width:100%;height:100%;position: fixed;left: 0;top: 0;background: rgba(0,0,0,0.7);
     .post-box{width:90%;margin: auto;margin-top: 160px;
+      p{font-size: 16px;color:#fff;text-align: left;margin-bottom: 6px;}
       .title-input{margin-bottom: 30px;}
       .content-input{margin-bottom: 30px;}
     }
@@ -394,11 +404,11 @@ export default {
   .comment-message-wrapper {
     width: 100%;
     height: 100%;
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     .out {
-      position: absolute;
+      position: relative;
       left: 0;
       top: 0;
       width: 100%;
@@ -407,9 +417,9 @@ export default {
     }
     .comment-message-box {
       position: absolute;
-      bottom: 60px;
+      bottom: 0;
       width: 100%;
-      height: 30px;
+      height: 36px;
       z-index: 9;
       display: flex;
       .comment-input {

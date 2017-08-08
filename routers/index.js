@@ -81,7 +81,7 @@ userrouter.get("/:id/posts_detail", (req, res) => {
                     LEFT JOIN (SELECT comments.id,comments.content,comments.createdAt AS comments_ca,comments.createdAt,comments.postId,comments.userId,users.nickname AS comment_user_nickname FROM comments LEFT JOIN users ON comments.userId = users.id) AS c_u ON posts.id = c_u.postId \
                     LEFT JOIN users ON posts.userId = users.id \
                     LEFT JOIN replies ON c_u.id = replies.commentId \
-                    LEFT JOIN (SELECT stars.userId,users.nickname AS stars_nickname,stars.postId,users.id FROM stars LEFT JOIN users ON stars.userId = users.id) AS s_u ON posts.id=s_u.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = " + id + ") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = " + id + ") OR posts.userId=" + id + ";").then(function(result) {
+                    LEFT JOIN (SELECT stars.userId,users.nickname AS stars_nickname,stars.postId,users.id FROM stars LEFT JOIN users ON stars.userId = users.id) AS s_u ON posts.id=s_u.postId WHERE posts.userId IN (SELECT relations.userId FROM relations WHERE relations.friendId = " + id + ") OR posts.userId IN (SELECT relations.friendId FROM relations WHERE relations.userId = " + id + ") OR posts.userId=" + id + " ORDER BY postid DESC;").then(function(result) {
         res.send(mergResult(result[0]))
     });
 

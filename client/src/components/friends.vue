@@ -3,7 +3,8 @@
     <ul>
       <li v-for="friend in friends" :key="friend.id" @click="chat(friend.nickname,friend.id,friend.logo)">
         <el-badge :value="friend.unread" class="item">
-          <img :src="host+'upload/'+friend.logo" alt="" width="90" height="90">
+          <img :src="host+'upload/'+friend.logo" alt="" width="90" height="90" v-if="friend.logo">
+          <img :src="host+'upload/null.jpg'" alt="" width="90" height="90" v-if="!friend.logo">
         </el-badge>
         <div class="nickname">{{friend.nickname}}</div>
       </li>

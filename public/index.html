@@ -1,0 +1,348 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><title>client</title><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"><meta name=x5-fullscreen content=true><meta name=full-screen content=yes><style>* {
+            margin: 0;
+            padding: 0;
+        }
+        html,body{width:100%;height:100%;}
+        .preload {width:100%;height:100%;background: #000;}
+        #canvas{position: absolute;z-index: 0;}
+        #main{width:100%;height:100%;position: absolute;z-index: 1;}
+
+        @-webkit-keyframes glitch {
+            0% {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+            20% {
+                -webkit-transform: translate(-2px, 2px);
+                transform: translate(-2px, 2px)
+            }
+            40% {
+                -webkit-transform: translate(-2px, -2px);
+                transform: translate(-2px, -2px)
+            }
+            60% {
+                -webkit-transform: translate(2px, 2px);
+                transform: translate(2px, 2px)
+            }
+            80% {
+                -webkit-transform: translate(2px, -2px);
+                transform: translate(2px, -2px)
+            }
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+        }
+
+        @keyframes glitch {
+            0% {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+            20% {
+                -webkit-transform: translate(-2px, 2px);
+                transform: translate(-2px, 2px)
+            }
+            40% {
+                -webkit-transform: translate(-2px, -2px);
+                transform: translate(-2px, -2px)
+            }
+            60% {
+                -webkit-transform: translate(2px, 2px);
+                transform: translate(2px, 2px)
+            }
+            80% {
+                -webkit-transform: translate(2px, -2px);
+                transform: translate(2px, -2px)
+            }
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+        }
+
+        .text {
+            text-align: center;
+            margin: auto;
+            position: relative;
+            width: 129px;
+        }
+
+        .text:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .text span {
+            font-size: 30px;
+            display: block;
+            font-weight: 600;
+            color: #fff;
+            position: relative;
+            width: 25px;
+            float: left;
+        }
+
+        .shake.text span:before {
+            content: attr(data-title);
+            color: #0ff;
+            z-index: -1;
+            animation: glitch .3s cubic-bezier(.25, .46, .45, .94) both, hide 0s .3s linear both;
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .shake.text span:after {
+            content: attr(data-title);
+            color: #f0f;
+            z-index: -2;
+            animation: glitch .3s cubic-bezier(.25, .46, .45, .94) reverse both, hide 0s .3s linear both;
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .text-a {
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            font-weight: bold;
+            width: 200px;
+            background: -webkit-gradient(linear, left top, right top, color-stop(0, #FFCC33), color-stop(0.3, #FFCC33), color-stop(0.5, white), color-stop(0.7, #FFCC33), color-stop(1, #FFCC33));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text 3s infinite linear;
+            font-size: 16px;
+            font-family: "Microsoft YaHei";
+        }
+
+        @keyframes text {
+            0% {
+                background-position: -60px 0;
+            }
+
+            100% {
+                background-position: 160px 0;
+            }
+        }
+
+        .icon {
+            margin: auto;
+            width: 200px;
+        }
+
+        #svg {
+            width: 200px;
+            height: 150px;
+        }</style><link href=/static/css/app.6efe1383ac361aba5a86962ad107edf3.css rel=stylesheet></head><body><div class=preload><canvas id=canvas></canvas><div id=main><div style=height:300px></div><div class=icon><svg t=1497624244055 class=icon viewBox="-50 -60 300 300" version=1.1 xmlns=http://www.w3.org/2000/svg p-id=1982 xmlns:xlink=http://www.w3.org/1999/xlink width=200 height=150 id=svg><g id=pangxie><path d="M172.727,121.363c0-1.363-1.363-2.272-2.727-2.272
+                s-2.273,0.909-2.273,2.272c0,2.728-9.09,5-20,5c-2.271,0-4.09,0-6.363-0.454c0.91-1.818,1.363-3.183,1.363-5v-4.546
+                c0-1.363,0-3.182-0.453-5h0.453c12.273,0,22.729-3.636,24.547-8.637c0-0.453,0.453-0.908,0.453-1.363v-0.454
+                c0-1.364-1.363-2.273-2.271-2.273c-1.364,0-2.273,0.909-2.273,2.273c0,2.728-9.091,5-20,5h-1.818c-0.454-1.818-1.363-3.183-1.818-5
+                c8.637-5.455,13.637-12.728,13.637-20.455c0-5-2.272-10-6.363-14.091c0.908-1.818,1.363-3.637,1.363-5.909
+                c-0.455-8.182-7.272-15-15.455-15c-1.817,0-3.636,0.455-5,0.909v9.091h-9.09c-0.455,1.364-0.91,3.182-0.91,5c0,8.182,6.818,15,15,15
+                c4.547,0,8.183-1.818,10.91-5c2.727,3.182,4.09,6.364,4.09,10c0,5.909-4.09,11.818-10.908,15.909
+                c-3.637-5.455-8.637-10.455-14.092-10.455h-45c-5.454,0-10.454,5-14.091,10.909c-6.818-4.545-10.909-10-10.909-15.909
+                c0-3.636,1.364-6.818,4.091-10c2.727,3.182,6.818,5,10.909,5c8.182,0,15-6.818,15-15c0-1.818-0.454-3.637-0.909-5h-9.091v-9.091
+                c-1.818-0.909-3.636-1.364-5-1.364c-8.182,0-15,6.818-15,15c0,2.272,0.455,4.091,1.364,5.909c-4.091,4.091-6.364,9.091-6.364,14.091
+                c0,7.727,5,15,13.637,20.455c-0.909,1.817-1.364,3.636-2.273,5.454h-1.818c-10.909,0-20-2.272-20-5c0-1.363-0.909-2.272-2.273-2.272
+                s-2.273,0.909-2.727,2.272v0.91c1.363,4.999,11.818,9.09,25,9.09h0.454c-0.454,1.818-0.454,3.637-0.454,5v5
+                c0,1.363,0.454,3.182,1.363,5c-1.818,0-4.091,0.455-6.363,0.455c-10.909,0-20-2.273-20-5v-0.455c0-1.363-0.909-2.727-2.728-2.727
+                s-2.272,0.908-2.272,2.727v0.455c0,5.454,11.363,10,25,10c3.182,0,6.363-0.455,9.091-0.455c2.727,3.637,6.363,7.728,10.909,10.909
+                c-0.909,0.909-2.273,1.818-3.182,3.183c-8.182,7.271-16.364,10.908-18.636,9.09c-0.455-0.908-1.364-1.363-2.273-1.363
+                c-1.363,0-2.727,0.909-2.727,2.728c0,0.909,0.455,1.363,0.909,1.817c3.636,4.092,15,0.455,25.455-8.636L75.909,145
+                c5.909,4.091,12.272,6.818,16.364,6.818h15c4.09,0,10.453-2.728,16.363-6.818l4.09,4.091c10,8.182,20.455,12.272,24.547,9.546
+                c0.908-0.455,1.363-1.364,1.363-2.273c0-1.363-0.91-2.727-2.728-2.727c-0.909,0-1.364,0.454-1.818,0.908
+                c-1.817,2.273-10-1.818-18.636-9.09c-1.364-0.91-2.273-1.818-3.182-3.183c4.09-3.182,8.182-7.272,10.908-10.909
+                c2.728,0.455,5.909,0.455,9.092,0.455c12.271,0,22.727-3.637,24.545-8.637C172.727,122.727,172.727,122.272,172.727,121.363
+                C172.727,121.818,172.727,121.818,172.727,121.363z" id=path1 stroke=none stroke-width=5></path></g><g id=fish><path d="M170.424,115.553c-0.344-7.244-3.975-14.447-20.574-26.038c-7.885-5.505-14.995-7.531-21.266-9.321
+		c-6.814-1.95-12.195-3.48-15.691-8.977l-0.119-0.177c-4.26-6.699-10.699-16.835-17.91-16.835c-0.328,0-0.656,0.017-0.976,0.059
+		c-3.135,0.403-5.69,1.85-7.581,4.303c-1.521,1.967-2.605,4.615-3.236,7.859c-1.092,5.631-0.563,11.867-0.311,14.869
+		c0.051,0.621,0.092,1.109,0.109,1.428c0.076,1.824-2.799,4.573-7.506,7.179c-4.463,2.454-9.33,4.16-11.457,4.388
+		c-0.033,0-0.066,0.008-0.101,0.008c-1.319,0-3.487-2.538-5.581-4.984c-3.774-4.438-8.951-10.498-16.39-11.389
+		c-0.387-0.051-0.799-0.067-1.202-0.067c-3.186,0-6.354,1.396-8.674,3.841c-3.883,4.077-4.455,9.852-4.261,13.979
+		c0.361,7.361,6.094,11.75,9.515,14.383c0.546,0.418,1.177,0.906,1.581,1.26c-0.345,0.277-0.866,0.637-1.303,0.959
+		c-2.9,2.057-7.758,5.514-9.381,12.109c-0.882,3.598-0.714,7.844,0.462,11.635c1.732,5.563,4.917,8.27,7.288,9.557
+		c1.958,1.066,4.051,1.605,6.22,1.605c7.867,0,14.751-6.986,18.146-11.146c2.076-2.539,4.161-3.773,6.381-3.773
+		c4.27,0,8.413,4.604,11.439,7.969l0.293,0.328c5.514,6.117,5.068,10.313,4.641,14.371c-0.033,0.295-0.06,0.59-0.093,0.883
+		c-1.017,10.313,2.933,13.666,6.43,14.676c0.79,0.227,1.64,0.344,2.513,0.344l0,0c6.985,0,15.399-7.404,22.157-13.354
+		c0.319-0.287,0.647-0.564,0.958-0.84c4.689-4.119,7.816-4.203,11.793-4.314c4.277-0.117,9.605-0.26,18.053-5.563
+		c7.432-4.664,14.164-10.559,18.938-16.602C168.164,124.557,170.603,119.234,170.424,115.553L170.424,115.553z" id=path2 troke=#000 fill=none stroke-width=10></path></g><g id=rapid><path d="M104.551,39.082l44.377,14.198L112.14,88.395l26.169,16.264l-85.721,75.269l23.139-61.195l-24.655-15.36L104.551,39.082
+		L104.551,39.082z" id=path3 fill=none stroke-width=10></path></g><circle fill=none stroke=#070102 stroke-width=10 stroke-linecap=round stroke-miterlimit=10 cx=98.991 cy=106.625 r=93.375 id=circle /></svg><div class=text><span data-title=F>F</span> <span data-title=R>R</span> <span data-title=E>E</span> <span data-title=S>S</span> <span data-title=H>H</span></div><div class=text-a>SPEEDY</div></div></div><script src=http://115.159.72.218:3000/js/kute.min.js></script><script src=http://115.159.72.218:3000/js/kute-attr.min.js></script><script src=http://115.159.72.218:3000/js/kute-svg.min.js></script><script>var t1 = KUTE.fromTo('#path1', {
+            attr: {
+                fill: '#673AB7',
+                stroke: '#673AB7'
+            },
+            path: '#path1'
+        }, {
+            attr: {
+                fill: '#2196F3',
+                stroke: '#2196F3'
+            },
+            path: '#path2'
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000,
+            morphPrecision: 3
+        });
+        var t2 = KUTE.fromTo('#path1', {
+            attr: {
+                fill: '#2196F3',
+                stroke: '#2196F3'
+            },
+            path: '#path2'
+        }, {
+            attr: {
+                fill: 'deeppink',
+                stroke: 'deeppink'
+            },
+            path: '#path3'
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000,
+            morphPrecision: 3
+        });
+        var t3 = KUTE.fromTo('#path1', {
+            attr: {
+                fill: 'deeppink',
+                stroke: 'deeppink'
+            },
+            path: '#path3'
+        }, {
+            attr: {
+                fill: '#673AB7',
+                stroke: '#673AB7'
+            },
+            path: '#path1'
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000,
+            morphPrecision: 3
+        });
+        t1.chain(t2);
+        t2.chain(t3);
+        t3.chain(t1);
+        t1.start();
+        var l1 = KUTE.fromTo('#circle', {
+            draw: '0% 0%',
+            attr: {
+                stroke: '#673AB7'
+            }
+        }, {
+            draw: '100% 150%',
+            attr: {
+                stroke: '#2196F3'
+            }
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000
+        });
+        var l2 = KUTE.fromTo('#circle', {
+            draw: '0% 0%',
+            attr: {
+                stroke: '#2196F3'
+            }
+        }, {
+            draw: '100% 150%',
+            attr: {
+                stroke: 'deeppink'
+            }
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000
+        });
+        var l3 = KUTE.fromTo('#circle', {
+            draw: '0% 0%',
+            attr: {
+                stroke: 'deeppink'
+            }
+        }, {
+            draw: '100% 150%',
+            attr: {
+                stroke: '#673AB7'
+            }
+        }, {
+            easing: 'easingCubicInOut',
+            duration: 1000
+        });
+        l1.chain(l2);
+        l2.chain(l3);
+        l3.chain(l1);
+        l1.start();
+        window.timer1=setInterval(function () {
+            var text = document.getElementsByClassName("text")[0];
+            text.className = "text shake";
+            setTimeout(function () {
+                text.className = "text";
+            }, 300);
+        }, 1000);
+
+        var canvas =document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width= window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        var fov = 600;
+        var num = 600;
+        var stars=[];
+
+        function star(){
+            this.scale = fov/(fov+this.z);
+            this.x = Math.random()*canvas.width-canvas.width/2;
+            this.y = Math.random()*canvas.height-canvas.height/2;
+            this.z = Math.random()*fov-fov/2;
+            
+        }
+
+        star.prototype.draw=function(){
+            ctx.beginPath();
+            var x=this.x*this.scale+canvas.width/2;
+            var y=this.y*this.scale+canvas.height/2;
+            var r = 1 * this.scale;
+            ctx.arc(x,y,r,0,2*Math.PI);
+            ctx.save();
+            ctx.globalAlpha=0.5;
+            ctx.fillStyle="yellow";
+            ctx.fill();
+            ctx.restore();
+        }
+
+        
+        function init(){
+            for(var i=0;i<num;i++){
+                var s = new star();
+                s.draw();
+                stars.push(s);
+            }
+            
+        }
+        init();
+        function render(s) {
+            s.z-=10;
+            if(s.z<-fov){
+                s.z += fov;
+            }
+            var x = s.x;
+            var y = s.y;
+            var z = s.z;
+            var scale = fov/(fov+z);
+            s.scale=scale;
+        }
+
+        function update() {
+            window.timer2=window.requestAnimationFrame(update);
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            for(var i=0;i<num;i++){
+                var s = stars[i];
+                render(s);
+                s.draw();
+            }
+        }
+        update();</script></div><div id=app></div><script type=text/javascript src=/static/js/manifest.1a93bc1a1dda9a22661d.js></script><script type=text/javascript src=/static/js/vendor.c29fc79afeb20c530d5c.js></script><script type=text/javascript src=/static/js/app.7ec51a4de5b4f6253b80.js></script></body></html>

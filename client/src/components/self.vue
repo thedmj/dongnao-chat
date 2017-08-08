@@ -501,8 +501,8 @@
     .avatar-uploader-icon {
       font-size: 28px;
       color: #8c939d;
-      width: 178px;
-      height: 178px;
+      width: 100%;
+      height: 100%;
       line-height: 178px;
       text-align: center;
     }

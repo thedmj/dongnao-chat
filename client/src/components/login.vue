@@ -130,7 +130,6 @@ export default {
                             nickname:This.r_nickname
                         },
                         success(res){
-                            console.log(res);
                             This.showRegister = false;
                             Message({
                                 message: '注册成功！请重新登录',
@@ -174,6 +173,10 @@ export default {
                     }
                     document.removeEventListener("keydown",This.keydownHandler,false);
                     This.$router.push("/friends");
+                }else if(res.status == 1){
+                    Message.error("用户名活密码错误");
+                }else{
+                    Message.error("未知错误");
                 }
             }
         });

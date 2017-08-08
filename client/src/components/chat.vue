@@ -4,8 +4,10 @@
       <!-- {{me.name}}和 {{chat_friend.name}} id:{{chat_friend.id}}聊天 -->
       <ul class="message-list" v-if="chat_friend.name">
         <li v-for="(item,$index) in message" :key="$index" :class="{send:item.type =='send',receive:item.type=='receive'}">
-          <avatar :src="host+'upload/'+chat_friend.logo" :username="chat_friend.name" :size="70"  v-if="item.type=='receive'" class="avatar"></avatar>
-          <avatar :src="host+'upload/'+me.logo" :username="me.nickname" :size="70"  v-if="item.type=='send'" class="avatar"></avatar>
+          <avatar :src="host+'upload/'+chat_friend.logo" :username="chat_friend.name" :size="70"  v-if="item.type=='receive'&&chat_friend.logo!='null'" class="avatar"></avatar>
+          <avatar :src="host+'upload/null.jpg'" :username="chat_friend.name" :size="70"  v-if="item.type=='receive'&&chat_friend.logo=='null'" class="avatar"></avatar>
+          <avatar :src="host+'upload/'+me.logo" :username="me.nickname" :size="70"  v-if="item.type=='send'&&me.logo" class="avatar"></avatar>
+          <avatar :src="host+'upload/null.jpg'" :username="me.nickname" :size="70"  v-if="item.type=='send'&&!me.logo" class="avatar"></avatar>
           <div class="text">
             {{item.text}}
           </div>
@@ -182,6 +184,7 @@ export default {
           padding: 10px;
           border-radius: 6px;
           max-width: 100%;
+          width:auto;
           word-break: break-all;
           text-align: left;
         }
