@@ -5,16 +5,18 @@ import App from './App'
 import router from './router'
 import store from "./store";
 import $ from "jquery";
+import { Loading } from "element-ui";
+Vue.use(Loading);
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: { App }
 });
 $(".preload").remove();
 clearInterval(window.timer1)

@@ -507,7 +507,7 @@ router.post("/register", (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
     var nickname = req.body.nickname;
-    CONNECT.query("INSERT INTO users (username,password,nickname) VALUES ('" + username + "','" + password + "','" + nickname + "');").then((r) => {
+    CONNECT.query("INSERT INTO users (username,password,nickname,createdAt, updatedAt) VALUES ('" + username + "','" + password + "','" + nickname + "',NOW(),NOW());").then((r) => {
         if (r[0].affectedRows == 1) {
             res.send({ status: 0, message: "注册成功" });
         }

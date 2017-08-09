@@ -7,25 +7,29 @@ var io = socketio(http);
 var CONNECT = require("./model").connect;
 var client = {};
 
-io.on("connection", function (socket) {
+io.on("connection", function(socket) {
+    socket.on('disconnect', (reason) => {
+        console.log("断开连接");
+    });
     socket.on("login", (user) => { //连接时保存下用户的socket连接
-        if(client[user.id]){
+        if (client[user.id]) {
             client[user.id].emit("logout");
             console.log("别处登陆");
         }
         client[user.id] = socket;
     });
-    socket.on("logout",(id)=>{
-        // client[id] = null;
+    socket.on("logout", (id) => {
+        console.log(id, " 注销");
+        client[id] = null;
     });
-    socket.on("clearunread",(o)=>{
-        var key = o.userid + "_" +o.friendid ;
-        redis.lrange(key,0,-1,(err,data)=>{
-            for(let i=0;i<data.length;i++){
+    socket.on("clearunread", (o) => {
+        var key = o.userid + "_" + o.friendid;
+        redis.lrange(key, 0, -1, (err, data) => {
+            for (let i = 0; i < data.length; i++) {
                 data[i] = JSON.parse(data[i]);
                 data[i].readed = true;
                 data[i] = JSON.stringify(data[i]);
-                redis.lset(key,i,data[i]);
+                redis.lset(key, i, data[i]);
             }
             socket.emit("clearAll");
         });

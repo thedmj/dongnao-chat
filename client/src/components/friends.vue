@@ -48,6 +48,7 @@
             logo
           }
         });
+        this.clear_message();
         // this.clearUnread(id)  //清空unread
       }
 

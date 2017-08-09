@@ -3,10 +3,10 @@ import vuex from "vuex";
 import $ from "jquery";
 
 vue.use(vuex);
-// let host = "http://localhost:3000/"; //以后这里要改掉
+let host = "http://localhost:3000/"; //以后这里要改掉
 // let host = "http://192.168.168.111:3000/";
 // let host = "http://115.159.106.78:3000/";
-let host = "http://115.159.72.218:3000/";
+// let host = "http://115.159.72.218:3000/";
 // var id =1;
 // let get_friends = host + "user/" + id + "/friends";
 // let get_posts = host + "user/" + id + "/posts_detail";
@@ -21,7 +21,8 @@ export default new vuex.Store({
         message: [],
         chat_friend: {
             name: "",
-            id: ""
+            id: "",
+            logo: null
         },
         me: null,
         request_list: {
@@ -47,11 +48,23 @@ export default new vuex.Store({
                 state.me = null;
             }
         },
+        set_friends(state, data) {
+            state.friends = data;
+        },
         set_chat_friend(state, data) {
-            state.chat_friend.name = data.friend.nickname;
-            state.chat_friend.id = data.friend.id;
-            state.chat_friend.logo = data.friend.logo;
-            // state.chat_friend.me = state.me;
+            if (data == null) {
+                state.chat_friend = {
+                    name: "",
+                    id: "",
+                    logo: null
+                }
+            } else {
+                state.chat_friend.name = data.friend.nickname;
+                state.chat_friend.id = data.friend.id;
+                state.chat_friend.logo = data.friend.logo;
+                // state.chat_friend.me = state.me;
+            }
+
         },
         addUnread(state, data) {
             state.friends = state
@@ -87,7 +100,10 @@ export default new vuex.Store({
                 }
                 return item;
             })
-        }
+        },
+        set_posts(state, data) {
+            state.posts = [];
+        },
     },
     actions: {
 

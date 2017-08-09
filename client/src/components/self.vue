@@ -1,9 +1,9 @@
 <template>
-  <div class="self" v-if="me">
+  <div class="self" v-if="me" v-loading="loading">
     <!-- 上传头像start -->
     <div class="header">
       <el-upload class="avatar-uploader" :class="'uploader'" :name="'img'" :action="action" :show-file-list="false" :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :before-upload="beforeAvatarUpload" :on-progress="uploadProgress">
         <img v-if="me.logo" :src="host+'upload/'+me.logo" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
@@ -42,7 +42,8 @@
             <div class="swiper-slide">
               <ul>
                 <li v-for="user in search_friend_result" :key="user.id" class="friend-item">
-                  <img :src="host+'upload/'+user.logo" alt="" width="70" height="70">
+                  <img :src="host+'upload/'+user.logo" alt="" width="70" height="70" v-if="user.logo">
+                  <img :src="host+'upload/null.jpg'" alt="" width="70" height="70" v-if="!user.logo">
                   <div class="right">
                     <h2>{{user.nickname}}</h2>
                     <el-button type="primary" size="small" @click="sendRequest(me,user)">申请好友</el-button>
@@ -159,7 +160,8 @@
     collapse,
     collapseItem,
     badge,
-    Message
+    Message,
+    
   } from "element-ui";
 
   export default {
@@ -171,7 +173,8 @@
         search_friend_visible: false,
         swiper: null,
         num_send_request: 0,
-        showSlideBox: false
+        showSlideBox: false,
+        loading:false
       }
     },
     props:["init"],
@@ -216,7 +219,7 @@
     },
     methods: {
       ...mapActions(["getFriends", "search_friend", "fetch_request_list"]),
-      ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket"]),
+      ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_friends","set_posts"]),
       search() {
         var id = this.me.id;
         this.search_friend({
@@ -286,33 +289,37 @@
       },
       //图片上传
       handleAvatarSuccess(res, file) {
-        // console.log(res,file);
+        console.log(res,file);
         this.me.logo = res.logo;
-        this.set_me(this.me);
-        var res = {
+        var result = {
           id: this.me.id,
           nickname: this.me.nickname,
           username: this.me.username,
           logo: this.me.logo,
           status: 0
         }
-        setCookie("user", JSON.stringify(res), 1);
+         this.set_me(result);
+        setCookie("user", JSON.stringify(result), 1);
+        this.loading = false;
       },
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
+        console.log(file.type)
+        const isIMG = file.type === 'image/jpeg' || file.type === 'image/png';
         const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+        if (!isIMG) {
+          Message.error('上传头像图片只能是 JPG | PNG 格式!');
         }
         if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+          Message.error('上传头像图片大小不能超过 2MB!');
         }
-        return isJPG && isLt2M;
+        return isIMG && isLt2M;
+      },
+      uploadProgress(){
+        this.loading = true;
       },
       //搜索好友
       show_search() {
         this.search_friend_visible = true;
-
       },
       handleClose(done) {
         this.search_friend_visible = false;
@@ -328,11 +335,12 @@
         removeCookie("user");
         this.$router.push("/login");
         this.socket.emit("logout",this.me.id);
-        this.set_me(null);
         this.socket.close();
-        console.log(this.init)
         this.set_socket(null);
-        
+        this.set_me(null);
+        this.set_friends([]);
+        this.set_chat_friend(null);
+        this.set_posts([]);
         this.init.setInit();
       },
     },
