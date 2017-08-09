@@ -3,6 +3,23 @@
     <h1>{{user.username}}</h1>
 
     <img :src="userImage" alt="" width="60" v-if="user.logo">
+    <!--上传组件-->
+    <el-upload
+      :name="'img'"
+      class="upload-demo"
+      ref="upload"
+      :multiple="false"
+      :action="action"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :auto-upload="false"
+      :on-change="handleChange"
+      list-type="picture"
+      :on-success="onUploadSuccess">
+      <el-button slot="trigger" size="small" type="primary" :disabled="this.fileList.length >1">选取</el-button>
+      <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
+      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
     <!--文章-->
     <el-form>
       <el-form-item>
@@ -54,7 +71,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
-          <el-button type="text" size="small" @click="showMessage(scope.row.username)">查看聊天记录</el-button>
+          <el-button type="text" size="small" @click="showMessage(scope.row.id)">查看聊天记录</el-button>
           <el-button type="text" size="small" @click="deleteFriendClick(scope)">删除</el-button>
         </template>
       </el-table-column>
@@ -99,23 +116,7 @@
         <el-button type="primary" @click="deleteFriend(deleteFriendScope)">确 定</el-button>
       </span>
     </el-dialog>
-    <!--上传组件-->
-    <el-upload
-      :name="'img'"
-      class="upload-demo"
-      ref="upload"
-      :multiple="false"
-      :action="action"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :auto-upload="false"
-      :on-change="handleChange"
-      list-type="picture"
-      :on-success="onUploadSuccess">
-      <el-button slot="trigger" size="small" type="primary" :disabled="this.fileList.length >1">选取</el-button>
-      <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
+    
 
     
   </div>
@@ -301,7 +302,7 @@
         })
       },
       showMessage(name) {
-        this.$router.push("/message?user=" + this.user.username + "&friend=" + name);
+        this.$router.push("/message?user=" + this.user.id + "&friend=" + name);
       },
       handleRemove(file, fileList) {
         fileList.splice(0,1);

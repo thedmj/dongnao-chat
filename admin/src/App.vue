@@ -2,17 +2,19 @@
   <div id="app">
     <div class="container" style="height:100%;">
       <el-row style="height:100%;">
-        <el-col :md="2" style="height:100%;">
+        <el-col :xs="4" :sm="4" :md="2" :lg="2" style="height:100%;">
           <div class="slide">
             <div class="slide-menu">
               <div class="logo"></div>
               <el-menu class="el-menu-vertical-demo" theme="dark" :router="true" >
-                <el-menu-item :key="route.name"  :index="route.path" v-if="!route.hidden" v-for="(route,index) in $router.options.routes">{{route.name}}</el-menu-item>
+                <el-row :xs="24" :sm="24" :md="24" :lg="24">
+                  <el-menu-item :key="route.name"  :index="route.path" v-if="!route.hidden" v-for="(route,index) in $router.options.routes">{{route.name}}</el-menu-item>
+                </el-row>
               </el-menu>
             </div>
           </div>
         </el-col>
-        <el-col :md="22" class="r-content">
+        <el-col :xs="20" :sm="20" :md="22" :lg="22" class="r-content">
           <div class="title">{{$route.name}}</div>
           <router-view></router-view>
         </el-col>
@@ -77,7 +79,7 @@
         width: 100%;
         height: 100%;
         position: relative;
-        .logo{padding-left: 20px;height:60px;background: url("http://10.url.cn/eth/ajNVdqHZLLBicQQlK9NCricbo6wBJzL1D0uVFbBZczibxlXYLHxa4HSzXGDicYCIEnrKuGprcfSy1gw/") no-repeat;background-size: contain;background-position: 10px;}
+        .logo{padding-left: 20px;height:60px;background: url('http://10.url.cn/eth/ajNVdqHZLLBicQQlK9NCricbo6wBJzL1D0uVFbBZczibxlXYLHxa4HSzXGDicYCIEnrKuGprcfSy1gw/') no-repeat;background-size: contain;background-position: 10px;}
       }
       .slide-menu {
         background: #324157;

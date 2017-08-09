@@ -1,15 +1,16 @@
 import $ from "jquery";
 import host from "../../config";
-export function getMessage(user,friend,cb){
+export function getMessage(user, friend, cb) {
     $.ajax({
-        url:host+"message",
-        data:{
-            user:user,
-            friend:friend,
+        url: host + "message",
+        data: {
+            user: user,
+            friend: friend,
         },
-        type:"GET",
-        success:function(e){
-            cb && cb(e);
+        type: "GET",
+        success: function(result) {
+            var res = JSON.parse("[" + result.toString() + "]")
+            cb && cb(res);
         }
     });
 }

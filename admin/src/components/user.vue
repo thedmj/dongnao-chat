@@ -2,7 +2,7 @@
   <div class="user">
     <el-table :data="data" stripe style="width: 100%" @row-click="rowClick">
       
-      <el-table-column type="index"  label="序号">
+      <el-table-column type="index"  label="序号" width="160">
       </el-table-column>
       <el-table-column prop="id" label="id" >
       </el-table-column>

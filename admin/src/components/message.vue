@@ -4,7 +4,7 @@
         {{user}}和{{friend}}的聊天记录：
       </p>
       <ul>
-        <li v-for="(text,i) in message" :key="i">{{text}}</li>
+        <li v-for="(item,index) in message" :key="index">{{item.user.name}}:{{item.text}}</li>
       </ul>
   </div>
 </template>
@@ -25,8 +25,8 @@ export default {
   mounted(){
     var user = this.$route.query.user;
     var friend = this.$route.query.friend;
-    getMessage(user,friend,(e)=>{
-      this.message = e;
+    getMessage(user,friend,(res)=>{
+      this.message = res;
     })
   }
 }
