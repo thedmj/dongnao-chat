@@ -25,7 +25,7 @@
                     <el-form-item label="昵称" prop="nickname" >
                         <el-input v-model="r_nickname"></el-input>
                     </el-form-item>
-                    <div>
+                    <div style="margin-bottom:30px;">
                         <el-button type="primary" @click="registerHandler">注册</el-button>
                     </div>
                     <div>

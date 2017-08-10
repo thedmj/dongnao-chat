@@ -1,25 +1,27 @@
 <template>
   <div class="user-item" v-show="user.id">
     <h1>{{user.username}}</h1>
-
-    <img :src="userImage" alt="" width="60" v-if="user.logo">
-    <!--上传组件-->
-    <el-upload
-      :name="'img'"
-      class="upload-demo"
-      ref="upload"
-      :multiple="false"
-      :action="action"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :auto-upload="false"
-      :on-change="handleChange"
-      list-type="picture"
-      :on-success="onUploadSuccess">
-      <el-button slot="trigger" size="small" type="primary" :disabled="this.fileList.length >1">选取</el-button>
-      <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
+    <div class="avater">
+      <img :src="userImage" alt="" width="60" v-if="user.logo" class="avater-img">
+      <!--上传组件-->
+      <el-upload
+        :name="'img'"
+        class="upload-demo"
+        ref="upload"
+        :multiple="false"
+        :action="action"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :auto-upload="false"
+        :on-change="handleChange"
+        list-type="picture"
+        :on-success="onUploadSuccess">
+        <el-button slot="trigger" size="small" type="primary" :disabled="this.fileList.length >1">选取</el-button>
+        <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+    </div>
+    
     <!--文章-->
     <el-form>
       <el-form-item>
@@ -31,7 +33,7 @@
         </div>
       </el-form-item>
     </el-form>
-    <el-table :data="user.post" stripe ref="posttable" @select="selectHandle" @select-all="selectHandle">
+    <el-table :data="tablePost" stripe ref="posttable" @select="selectHandle" @select-all="selectHandle">
       <el-table-column type="selection"></el-table-column>
       <el-table-column prop="title" label="标题">
       </el-table-column>
@@ -48,6 +50,9 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
+    
+    <el-pagination layout="prev, pager, next" :total="user.post.length" :page-size="5" v-if="user.post" :current-page="postsCurrentPage" @current-change="postCurrentChange"></el-pagination>
 
     <!--好友-->
 
@@ -64,7 +69,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="user.friends" stripe>
+    <el-table :data="tableFriend" stripe>
       <el-table-column prop="id" label="好友id">
       </el-table-column>
       <el-table-column prop="nickname" label="好友名称">
@@ -76,6 +81,8 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination layout="prev, pager, next" :total="user.friends.length" :page-size="5" v-if="user.post" :current-page="friendsCurrentPage" @current-change="friendCurrentChange"></el-pagination>
+    
 
     <!--增加文章对话框-->
     <el-dialog title="添加文章" :visible.sync="addPost.visible">
@@ -148,7 +155,8 @@
     option,
     select,
     input,
-    upload
+    upload,
+    pagination
   } from "element-ui";
   export default {
     data() {
@@ -159,6 +167,8 @@
           title: "",
           content: ""
         },
+        postsCurrentPage:1,
+        friendsCurrentPage:1,
         user: {},
         selectUser: "",
         allUsers: [],
@@ -176,6 +186,20 @@
       }
     },
     computed: {
+      tablePost(){
+        var size = 5;
+        if(this.user.post){
+          return this.user.post.slice((this.postsCurrentPage-1)*size,this.postsCurrentPage*size);
+        }
+        return this.user.post;
+      },
+      tableFriend(){
+        var size = 5;
+        if(this.user.friends){
+          return this.user.friends.slice((this.friendsCurrentPage-1)*size,this.friendsCurrentPage*size);
+        }
+        return this.user.friends;
+      },
       userImage(){
        return "http://localhost:3000/upload/"+unescape(this.user.logo);
       }
@@ -200,7 +224,8 @@
       "el-select": select,
       "el-option": option,
       "el-input": input,
-      "el-upload": upload
+      "el-upload": upload,
+      "el-pagination":pagination
     },
     methods: {
       addPostHandle() {
@@ -325,12 +350,27 @@
           this.user = user;
           fileList.splice(0,1);
         });
-      }
+      },
+      postCurrentChange(currentPage){
+        this.postsCurrentPage = currentPage;
+      },
+      friendCurrentChange(currentPage){
+        this.friendsCurrentPage = currentPage;
+      },
     }
   }
 
 </script>
 <style lang="less">
-  .upload-demo{width:300px;}
+  .user-item{padding:10px 6px 60px 6px;box-sizing: border-box;;
+    .el-pagination{text-align: right;}
+    .avater{margin-bottom: 10px;;
+      .avater-img{width:153px;height:153px;}
+      .upload-demo{width:300px;display: inline-block;vertical-align: top;}
+      
+    }
+  }
+  
+  
 
 </style>

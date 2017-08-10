@@ -183,7 +183,7 @@ export default {
           font-size: 16px;
           padding: 10px;
           border-radius: 6px;
-          max-width: 100%;
+          max-width: 90%;
           width:auto;
           word-break: break-all;
           text-align: left;
