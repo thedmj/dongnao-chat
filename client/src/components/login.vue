@@ -8,15 +8,15 @@
                 <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
             </el-form-item>
             <el-button type="primary" @click="submit">登录</el-button>
-            <el-button type="primary" @click="showRegister=true">注册</el-button>
+            <el-button type="success" @click="showRegister=true">注册</el-button>
         </el-form>
         <transition name="fade">
             <div class="register" v-if="showRegister">
                 <el-form>
-                    <el-form-item label="用户名" prop="username" >
+                    <el-form-item label="用户名(6位以上非特殊字符)" prop="username" >
                         <el-input v-model="r_username"></el-input>
                     </el-form-item>
-                    <el-form-item label="密码" prop="pass" >
+                    <el-form-item label="密码(6位以上非特殊字符)" prop="pass" >
                         <el-input type="password" v-model="r_password"></el-input>
                     </el-form-item>
                     <el-form-item label="请再次输入密码" prop="pass" >
@@ -29,7 +29,7 @@
                         <el-button type="primary" @click="registerHandler">注册</el-button>
                     </div>
                     <div>
-                        <el-button type="primary" @click="showRegister=false">返回</el-button>
+                        <el-button type="warning" @click="showRegister=false">返回</el-button>
                     </div>
                 </el-form>
             </div>

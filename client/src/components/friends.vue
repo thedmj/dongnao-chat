@@ -7,6 +7,7 @@
           <img :src="host+'upload/null.jpg'" alt="" width="90" height="90" v-if="!friend.logo">
         </el-badge>
         <div class="nickname">{{friend.nickname}}</div>
+        <span class="delete" @click.stop="deleteHandler(friend.id)">x</span>
       </li>
     </ul>
   </div>
@@ -37,6 +38,9 @@
     methods: {
       ...mapActions(["getFriends","get_message","clear_message"]),
       ...mapMutations(["set_chat_friend", "set_me", "addUnread", "clearUnread", "set_socket","set_unread"]),
+      deleteHandler(friendID){
+        console.log(friendID);
+      },
       chat(nickname, id, logo) {
         // console.log("friend: ",nickname,id,logo)
         this.$router.push("/chat" + "?nickname=" + nickname + "&id=" + id+"&logo="+logo);
@@ -122,6 +126,7 @@
 .friends{padding:0 30px 0 30px;overflow: auto;
   ul{text-align: left;
     li{border-bottom: 1px solid #ccc;}
+    .delete{font-size: 30px;vertical-align: middle;float: right;line-height: 104px;}
   }
   .nickname{display: inline-block;font-size: 28px;vertical-align: middle;}
 }
