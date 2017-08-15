@@ -99,8 +99,8 @@
             <li v-for="item in request_list.get" :key="item.id" class="request-item">
               {{item.nickname}} 请求添加你为好友
               <div class="buttons" v-if="item.respone == null">
-                <button @click="request_handle(item.u_id,item.r_id,'agree')">同意</button>
-                <button @click="request_handle(item.u_id,item.r_id,'refuse')">拒绝</button>
+                <el-button @click="request_handle(item.u_id,item.r_id,'agree')">同意</el-button>
+                <el-button @click="request_handle(item.u_id,item.r_id,'refuse')">拒绝</el-button>
               </div>
               <p v-else-if="item.respone == 1">
                 已经同意了

@@ -171,8 +171,8 @@ userrouter.get("/:id/request", (req, res) => {
 userrouter.post("/:id/rf", function(req, res) {
     var id = req.body.id;
     var userid = req.body.userid;
-    CONNECT.query("DELETE FROM relations WHERE (userId=" + id + " AND friendId=" + userid + ") OR (userId=" + userid + " AND friendId=" + id + ")").then(function(e) {
-        res.send(e[0]);
+    CONNECT.query("DELETE FROM relations WHERE (userId=" + id + " AND friendId=" + userid + ") OR (userId=" + userid + " AND friendId=" + id + ")").then(function(r) {
+        res.send(r[0]);
     });
 });
 //增加朋友接口
