@@ -9,37 +9,36 @@ import login from "../components/login.vue";
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'login',
-      component: login
-    },
-    {
-      path: '/login',
-      name: '登录',
-      component: login
-    },
-    {
-      path: '/friends',
-      name: '朋友',
-      component: friends
-    },
-    {
-      path: '/chat',
-      name: '聊天',
-      component: chat,
-      
-    },
-    {
-      path: '/self',
-      name: '我',
-      component: self
-    },
-    {
-      path: '/posts',
-      name: '朋友圈',
-      component: posts
-    }
-  ]
+    routes: [{
+            path: '/',
+            name: 'login',
+            component: login
+        },
+        {
+            path: '/login',
+            name: '登录',
+            component: login
+        },
+        {
+            path: '/friends',
+            name: '朋友',
+            component: friends
+        },
+        {
+            path: '/chat',
+            name: '聊天',
+            component: chat,
+
+        },
+        {
+            path: '/self',
+            name: '我',
+            component: self
+        },
+        {
+            path: '/posts',
+            name: '朋友圈',
+            component: posts
+        }
+    ]
 })

@@ -33,7 +33,7 @@
           prop="id"
           label="id">
         </el-table-column>
-        
+
         <el-table-column
           prop="createdAt"
           label="点赞时间">
@@ -44,7 +44,7 @@
         </el-table-column>
       </el-table>
     </div>
-    
+
   </div>
 </template>
 
@@ -69,7 +69,7 @@ export default {
       }
   },
   methods:{
-    getData(){  
+    getData(){
         getPost(this.id,(data)=>{
             console.log(data);
             this.allData = data;

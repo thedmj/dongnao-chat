@@ -215,21 +215,21 @@
             <span data-title="E">E</span>
             <span data-title="S">S</span>
             <span data-title="H">H</span>
-           
+
         </div>
         <div class="text-a">SPEEDY</div>
     </div>
     </div>
-    
+
 
 
     <!-- <script src="http://localhost:3000/js/kute.min.js"></script>
     <script src="http://localhost:3000/js/kute-attr.min.js"></script>
     <script src="http://localhost:3000/js/kute-svg.min.js"></script>  -->
 
-     <script src="http://115.159.72.218:3000/js/kute.min.js"></script>
+     <!-- <script src="http://115.159.72.218:3000/js/kute.min.js"></script>
     <script src="http://115.159.72.218:3000/js/kute-attr.min.js"></script>
-    <script src="http://115.159.72.218:3000/js/kute-svg.min.js"></script> 
+    <script src="http://115.159.72.218:3000/js/kute-svg.min.js"></script>
 
     <script>
         var t1 = KUTE.fromTo('#path1', {
@@ -345,7 +345,7 @@
         var ctx = canvas.getContext("2d");
         canvas.width= window.innerWidth;
         canvas.height = window.innerHeight;
-        
+
         var fov = 600;
         var num = 600;
         var stars=[];
@@ -355,7 +355,7 @@
             this.x = Math.random()*canvas.width-canvas.width/2;
             this.y = Math.random()*canvas.height-canvas.height/2;
             this.z = Math.random()*fov-fov/2;
-            
+
         }
 
         star.prototype.draw=function(){
@@ -371,14 +371,14 @@
             ctx.restore();
         }
 
-        
+
         function init(){
             for(var i=0;i<num;i++){
                 var s = new star();
                 s.draw();
                 stars.push(s);
             }
-            
+
         }
         init();
         function render(s) {
@@ -403,11 +403,11 @@
             }
         }
         update();
-        
 
 
-    </script>
-      
+
+    </script> -->
+
     </div>
     <div id="app"></div>
     <!-- built files will be auto injected -->

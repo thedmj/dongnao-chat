@@ -13,7 +13,7 @@
           </div>
         </li>
       </ul>
-  
+
     </div>
     <div class="input-box">
       <el-input type="text" v-model="text"></el-input>
@@ -29,7 +29,7 @@ import {
 } from "../public/js/cookies.api";
 import { input, button, Message } from "element-ui";
 import io from "../../../node_modules/socket.io-client/dist/socket.io";
-import Avatar from 'vue-avatar/dist/Avatar'
+import Avatar from 'vue-avatar/dist/Avatar.vue';
 import {
   mapState,
   mapGetters,
@@ -112,7 +112,7 @@ export default {
       }
       if (!this.init.chat_init) {
         this.init.setInit("chat_init");
-        
+
       }
       this.socket.off("update");
       this.socket.on("update", this.updateHandle);
