@@ -7,7 +7,7 @@
         <img :src="host+'upload/null.jpg'" alt="" width="90" height="90" v-if="!friend.logo">
       </el-badge>
       <div class="nickname">{{friend.nickname}}</div>
-      <span class="delete" @click.stop="deleteHandler(friend.id,friend.nickname)">x</span>
+      <!-- <span class="delete" @click.stop="deleteHandler(friend.id,friend.nickname)">x</span> -->
     </li>
   </ul>
   <el-dialog title="删除好友" :visible.sync="dialogVisible" size="tiny">
@@ -198,7 +198,7 @@ export default {
       line-height: 20px;
       border-radius: 50%;
       background: red;
-      color:#fff; 
+      color:#fff;
     }
   }
   .nickname {
